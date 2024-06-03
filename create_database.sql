@@ -1,5 +1,5 @@
 CREATE TABLE Address(
-   Id_Address COUNTER,
+   Id_Address INT,
    Adress VARCHAR(80) NOT NULL,
    Is_Deleted LOGICAL NOT NULL,
    PRIMARY KEY(Id_Address)
@@ -12,7 +12,7 @@ CREATE TABLE Status(
 );
 
 CREATE TABLE Login(
-   Id_Login COUNTER,
+   Id_Login INT,
    Mail VARCHAR(80) NOT NULL,
    Password VARCHAR(50) NOT NULL,
    Is_Deleted LOGICAL NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE Login(
 );
 
 CREATE TABLE Order_Status(
-   Id_Order_Status COUNTER,
+   Id_Order_Status INT,
    Order_Status VARCHAR(50) NOT NULL,
    PRIMARY KEY(Id_Order_Status)
 );
@@ -32,7 +32,7 @@ CREATE TABLE Restaurant_Type(
 );
 
 CREATE TABLE User_Account(
-   Id_User COUNTER,
+   Id_User INT,
    Lastname VARCHAR(55) NOT NULL,
    Firstname VARCHAR(55) NOT NULL,
    Phone VARCHAR(50) NOT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE User_Account(
 );
 
 CREATE TABLE Restaurant(
-   Id_Restaurant COUNTER,
+   Id_Restaurant INT,
    Name VARCHAR(60) NOT NULL,
    Is_Deleted LOGICAL NOT NULL,
    Id_Type INT NOT NULL,
@@ -59,7 +59,7 @@ CREATE TABLE Restaurant(
 );
 
 CREATE TABLE Deliveryman(
-   Id_Deliveryman COUNTER,
+   Id_Deliveryman INT,
    Lastname VARCHAR(50) NOT NULL,
    Firstname VARCHAR(50) NOT NULL,
    Is_Deleted LOGICAL NOT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE Deliveryman(
 );
 
 CREATE TABLE Orders(
-   Order_ID COUNTER,
+   Order_ID INT,
    Order_Date DATE NOT NULL,
    Price DECIMAL(15,2) NOT NULL,
    Delivery_Hour TIME NOT NULL,
