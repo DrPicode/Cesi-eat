@@ -1,7 +1,7 @@
 CREATE TABLE Address(
    Id_Address INT,
    Adress VARCHAR(80) NOT NULL,
-   Is_Deleted LOGICAL NOT NULL,
+   Is_Deleted BOOLEAN NOT NULL,
    PRIMARY KEY(Id_Address)
 );
 
@@ -15,7 +15,7 @@ CREATE TABLE Login(
    Id_Login INT,
    Mail VARCHAR(80) NOT NULL,
    Password VARCHAR(50) NOT NULL,
-   Is_Deleted LOGICAL NOT NULL,
+   Is_Deleted BOOLEAN NOT NULL,
    PRIMARY KEY(Id_Login)
 );
 
@@ -38,7 +38,7 @@ CREATE TABLE User_Account(
    Phone VARCHAR(50) NOT NULL,
    Date_Creation DATE NOT NULL,
    Date_Deletion DATE,
-   Is_Deleted LOGICAL NOT NULL,
+   Is_Deleted BOOLEAN NOT NULL,
    Id_Login INT NOT NULL,
    Id_Status INT NOT NULL,
    PRIMARY KEY(Id_User),
@@ -62,7 +62,7 @@ CREATE TABLE Deliveryman(
    Id_Deliveryman INT,
    Lastname VARCHAR(50) NOT NULL,
    Firstname VARCHAR(50) NOT NULL,
-   Is_Deleted LOGICAL NOT NULL,
+   Is_Deleted BOOLEAN NOT NULL,
    Id_Login INT NOT NULL,
    PRIMARY KEY(Id_Deliveryman),
    UNIQUE(Id_Login),
@@ -75,7 +75,7 @@ CREATE TABLE Orders(
    Price DECIMAL(15,2) NOT NULL,
    Delivery_Hour TIME NOT NULL,
    Delivery_Code INT NOT NULL,
-   Is_Deleted LOGICAL NOT NULL,
+   Is_Deleted BOOLEAN NOT NULL,
    Id_Address INT NOT NULL,
    Id_Order_Status INT NOT NULL,
    Id_Deliveryman INT NOT NULL,
