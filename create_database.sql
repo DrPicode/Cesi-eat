@@ -50,7 +50,7 @@ CREATE TABLE User_Account(
 CREATE TABLE Restaurant(
    Id_Restaurant INT,
    Name VARCHAR(60) NOT NULL,
-   Is_Deleted LOGICAL NOT NULL,
+   Is_Deleted BOOLEAN NOT NULL,
    Id_Type INT NOT NULL,
    Id_User INT NOT NULL,
    PRIMARY KEY(Id_Restaurant),
