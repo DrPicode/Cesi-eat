@@ -71,3 +71,73 @@ app.post('/test', async (req, res) => {
     res.status(500).send('some error has occured');
   }
 });
+
+
+// API GET
+app.get('/test/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const query = 'SELECT * FROM test WHERE id = $1;';
+    const { rows } = await pool.query(query, [id]);
+
+    if (rows.length === 0) {
+      return res.status(404).send('this test is not in the database');
+    }
+
+    res.status(200).json(rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('failed');
+  }
+});
+
+
+// API PUT 
+
+app.put('/test/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, artist, price } = req.body;
+
+    if (!title && !artist && !price) {
+      return res.status(400).send('provide a field (title)');
+    }
+
+    const query = `
+      UPDATE test
+      SET title = COALESCE($1, title)
+      WHERE id = $2
+      RETURNING *;
+    `;
+    const { rows } = await pool.query(query, [title,id]);
+
+    if (rows.length === 0) {
+      return res.status(404).send('Cannot find anything');
+    }
+
+    res.status(200).json(rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Some error has occured failed');
+  }
+});
+
+
+//  API DELETE
+
+app.delete('/test/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const query = 'DELETE FROM test WHERE id = $1 RETURNING *;';
+    const { rows } = await pool.query(query, [id]);
+
+    if (rows.length === 0) {
+      return res.status(404).send('we have not found the test');
+    }
+
+    res.status(200).json(rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('some error has occured');
+  }
+});
