@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "module": "NodeNext",
+        "baseUrl": "Backend",
+        "outDir": "dist",
+        "sourceMap": true,
+        "noImplicitAny": true,
+    },
+    "include":["Backend/**/*"],
+}
