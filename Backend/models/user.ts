@@ -11,4 +11,8 @@ const userSchema: Schema<UserDocument> = new mongoose.Schema({
     password: String
 });
 
+interface UserData extends UserDocument, Document {
+}
+
 export default mongoose.model<UserDocument>('User', userSchema);
+export { UserData };
