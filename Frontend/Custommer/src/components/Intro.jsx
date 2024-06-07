@@ -2,7 +2,6 @@ import React from 'react';
 import shape1 from '../assets/Union.png';
 import shape2 from '../assets/shape.png';
 import img1 from '../assets/rectangle1.png';
-import img2 from '../assets/rectangle2.png';
 
 const Intro = () => {
 
@@ -34,9 +33,6 @@ const Intro = () => {
         </div>
         <div className="flex-1">
           <img src={img1} alt="" width={300} />
-        </div>
-        <div className="flex-1" style={{ marginRight: "60px" }}>
-          <img src={img2} alt="" width={300} />
         </div>
       </div>
     </div>

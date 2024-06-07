@@ -5,9 +5,21 @@ import Cart from '../components/Cart';
 
 const CheckOut = () => {
   const [active, setActive] = useState(true);
+  const [activeNow, setActiveNow] = useState(true); // Changement ici
+  const [currentDateTime, setCurrentDateTime] = useState('');
 
   const handelActiveToggle = () => {
     setActive(!active);
+  };
+
+  const handleActiveNowToggle = () => {
+    setActiveNow(!activeNow);
+    if (!activeNow) {
+      const now = new Date();
+      now.setHours(now.getHours() + 2); // Ajoute 2 heures
+      const formattedDateTime = now.toISOString().slice(0, 16);
+      setCurrentDateTime(formattedDateTime);
+    }
   };
 
   console.log(active);
@@ -72,13 +84,35 @@ const CheckOut = () => {
               <h3>Date de livraison</h3>
             </div>
             <div className="flex flex-col md:flex-row items-center gap-10">
-              <div className="flex items-center bg-secColor py-3 px-6 rounded-lg gap-2">
-                <AiOutlineCalendar className="fill-white w-6 h-6" />
-                <p className="text-white font-medium ">Programmer la livraison</p>
+              <div
+                className={
+                  activeNow
+                    ? 'flex items-center border-2 border-dashed border-secColor py-3 px-6 rounded-lg gap-2'
+                    : 'flex items-center bg-secColor py-3 px-6 rounded-lg gap-2'
+                }
+                onClick={handleActiveNowToggle}
+              >
+                <AiOutlineCalendar
+                  className={activeNow ? 'fill-black w-6 h-6' : 'fill-white w-6 h-6'}
+                />
+                <p className={activeNow ? 'text-black font-medium' : 'text-white font-medium'}>
+                  Programmer la livraison
+                </p>
               </div>
-              <div className="flex items-center  border-2 border-dashed border-secColor py-3 px-6 rounded-lg gap-2">
-                <AiOutlineCalendar className="fill-black w-6 h-6" />
-                <p className="text-black font-medium ">Livrer maintenant</p>
+              <div
+                className={
+                  activeNow
+                    ? 'flex items-center bg-secColor py-3 px-6 rounded-lg gap-2'
+                    : 'flex items-center border-2 border-dashed border-secColor py-3 px-6 rounded-lg gap-2'
+                }
+                onClick={handleActiveNowToggle}
+              >
+                <AiOutlineCalendar
+                  className={activeNow ? 'fill-white w-6 h-6' : 'fill-black w-6 h-6'}
+                />
+                <p className={activeNow ? 'text-white font-medium' : 'text-black font-medium'}>
+                  Livrer maintenant
+                </p>
               </div>
             </div>
           </div>
@@ -92,6 +126,8 @@ const CheckOut = () => {
               <input
                 type="datetime-local"
                 className="w-full h-10 border border-gray-300 rounded-lg p-2"
+                value={currentDateTime}
+                onChange={(e) => setCurrentDateTime(e.target.value)}
               />
             </div>
           </div>

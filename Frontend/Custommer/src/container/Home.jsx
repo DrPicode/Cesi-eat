@@ -1,14 +1,14 @@
 import React from 'react';
 import Intro from '../components/Intro';
-import Personalized from '../components/Personalized';
-import Recommend from '../components/Recommend';
+import FoodCategories from '../components/FoodCategories';
+import RestaurantCard from '../components/RestaurantCard';
 
 const Home = () => {
   return (
     <div>
       <Intro />
-      <Recommend />
-      <Personalized />
+      <FoodCategories />
+      <RestaurantCard />
     </div>
   );
 };

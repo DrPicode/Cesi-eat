@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import Cart from '../components/Cart';
-import Restaurant from '../assets/Restaurant.png';
-import restaurantpage from '../assets/restaurantpage..png';
+import mcdorestaurant from '../assets/mcdorestaurant.png';
+import restaurantpage from '../assets/mcfirst.jpg';
 import { Link } from 'react-router-dom';
-import beefSandwichImage from '../assets/personalized1.png';
-import chickenSandwichImage from '../assets/personalized1.png';
-import fishSandwichImage from '../assets/personalized1.png';
-import friesImage from '../assets/personalized1.png';
-import potatoesImage from '../assets/personalized1.png';
-import saladImage from '../assets/personalized1.png';
-import cocaImage from '../assets/personalized1.png';
-import fantaImage from '../assets/personalized1.png';
-import iceTeaImage from '../assets/personalized1.png';
+import beefSandwichImage from '../assets/boeuf.jpg';
+import chickenSandwichImage from '../assets/poulet.jpg';
+import fishSandwichImage from '../assets/poisson.jpg';
+import friesImage from '../assets/frites.jpg';
+import potatoesImage from '../assets/potatoes.jpg';
+import saladImage from '../assets/salade.jpg';
+import cocaImage from '../assets/cocacola.jpg';
+import fantaImage from '../assets/fanta.jpg';
+import iceTeaImage from '../assets/icetea.jpg';
 
 const RestaurantPage = () => {
   const [selectedSandwich, setSelectedSandwich] = useState(null);
@@ -50,7 +50,7 @@ const RestaurantPage = () => {
       <div className="bg-mainColor h-72  flex  justify-center items-center gap-10 p-10">
         <div>
           <img
-            src={Restaurant}
+            src={mcdorestaurant}
             alt="Restaurant"
             className=" object-cover w-full hidden md:block"
           />
@@ -107,8 +107,8 @@ const RestaurantPage = () => {
                 </h4>
                 <div className="flex flex-col md:flex-row items-center md:items-start">
                   <div className="flex-1">
-                    <p className="font-medium text-base">5,90 €</p>
-                    <p className="text-base font-normal text-lightGray md:w-3/4">
+                    <p className="font-medium text-base py-1">5,90 €</p>
+                    <p className="text-base font-normal text-lightGray py-1">
                       Délicieux, intemporel, le Menu Mc First™ jouit d'une popularité grandissante depuis sa création.
                       Son secret ? Une alliance parfaite entre ingrédients sélectionnés avec soin et recette à la saveur incomparable.
                       Le goûter, c'est l'adopter !
@@ -120,8 +120,8 @@ const RestaurantPage = () => {
                 </div>
 
                 {/* Cartes pour les choix */}
-                <div className="mt-10">
-                  <h3 className="font-medium text-lg">Choisissez votre sandwich</h3>
+                <div className="mt-5">
+                  <h3 className="font-medium text-lg py-2">Choisissez votre sandwich</h3>
                   <div className="flex flex-wrap justify-between">
                     <div
                       className={`w-full md:w-1/3 p-2 rounded-lg shadow-md cursor-pointer ${selectedSandwich === 'boeuf' ? 'border-4 border-orange-400' : ''
@@ -130,7 +130,7 @@ const RestaurantPage = () => {
                     >
                       <div className="bg-white p-4">
                         <img src={beefSandwichImage} alt="Sandwich Bœuf" className="w-full h-40 object-cover rounded-t-lg" />
-                        <h4 className="font-medium text-base mt-2 text-center">Sandwich Bœuf</h4>
+                        <h4 className="font-medium text-base mt-2 text-center">Mc First Bœuf</h4>
                       </div>
                     </div>
                     <div
@@ -140,7 +140,7 @@ const RestaurantPage = () => {
                     >
                       <div className="bg-white p-4">
                         <img src={chickenSandwichImage} alt="Sandwich Poulet" className="w-full h-40 object-cover rounded-t-lg" />
-                        <h4 className="font-medium text-base mt-2 text-center">Sandwich Poulet</h4>
+                        <h4 className="font-medium text-base mt-2 text-center">Mc First Poulet</h4>
                       </div>
                     </div>
                     <div
@@ -150,14 +150,14 @@ const RestaurantPage = () => {
                     >
                       <div className="bg-white p-4">
                         <img src={fishSandwichImage} alt="Sandwich Poisson" className="w-full h-40 object-cover rounded-t-lg" />
-                        <h4 className="font-medium text-base mt-2 text-center">Sandwich Poisson</h4>
+                        <h4 className="font-medium text-base mt-2 text-center">Mc First Poisson</h4>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-10">
-                  <h3 className="font-medium text-lg">Choisissez votre accompagnement</h3>
+                <div className="mt-5">
+                  <h3 className="font-medium text-lg py-2">Choisissez votre accompagnement</h3>
                   <div className="flex flex-wrap justify-between">
                     <div
                       className={`w-full md:w-1/3 p-2 rounded-lg shadow-md cursor-pointer ${selectedAccompagnement === 'frites' ? 'border-4 border-orange-400' : ''
@@ -192,17 +192,17 @@ const RestaurantPage = () => {
                   </div>
                 </div>
 
-                <div className="mt-10">
-                  <h3 className="font-medium text-lg">Choisissez votre boisson</h3>
+                <div className="mt-5">
+                  <h3 className="font-medium text-lg py-2">Choisissez votre boisson</h3>
                   <div className="flex flex-wrap justify-between">
                     <div
-                      className={`w-full md:w-1/3 p-2 rounded-lg shadow-md cursor-pointer ${selectedBoisson === 'coca' ? 'border-4 border-orange-400' : ''
+                      className={`w-full md:w-1/3 p-2 rounded-lg shadow-md cursor-pointer ${selectedBoisson === 'cocacola' ? 'border-4 border-orange-400' : ''
                         }`}
-                      onClick={() => handleCardClick('boisson', 'coca')}
+                      onClick={() => handleCardClick('boisson', 'cocacola')}
                     >
                       <div className="bg-white p-4">
                         <img src={cocaImage} alt="Coca" className="w-full h-40 object-cover rounded-t-lg" />
-                        <h4 className="font-medium text-base mt-2 text-center">Coca</h4>
+                        <h4 className="font-medium text-base mt-2 text-center">CocaCola 33cL</h4>
                       </div>
                     </div>
                     <div
@@ -212,7 +212,7 @@ const RestaurantPage = () => {
                     >
                       <div className="bg-white p-4">
                         <img src={fantaImage} alt="Fanta" className="w-full h-40 object-cover rounded-t-lg" />
-                        <h4 className="font-medium text-base mt-2 text-center">Fanta</h4>
+                        <h4 className="font-medium text-base mt-2 text-center">Fanta 33cL</h4>
                       </div>
                     </div>
                     <div
@@ -222,12 +222,11 @@ const RestaurantPage = () => {
                     >
                       <div className="bg-white p-4">
                         <img src={iceTeaImage} alt="Ice Tea" className="w-full h-40 object-cover rounded-t-lg" />
-                        <h4 className="font-medium text-base mt-2 text-center">Ice Tea</h4>
+                        <h4 className="font-medium text-base mt-2 text-center">Ice Tea 33cL</h4>
                       </div>
                     </div>
                   </div>
                 </div>
-
                 <button
                   onClick={handleAddToCart}
                   className={`bg-secColor text-white py-2 mt-10 rounded-md w-full transition-all ease-in-out hover:bg-mainColor ${!(selectedSandwich && selectedAccompagnement && selectedBoisson) ? 'opacity-50 cursor-not-allowed' : ''

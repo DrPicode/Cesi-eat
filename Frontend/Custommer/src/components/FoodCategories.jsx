@@ -1,8 +1,8 @@
 import React from 'react';
 import { menu } from '../data';
-const Recommend = () => {
+const FoodCategories = () => {
   return (
-    <div className="section__padding section__margin flex flex-col gap-5 lg:gap-8" style={{ padding: "0 230px" }}>
+    <div className="section__padding section__margin flex flex-col gap-5 lg:gap-8" style={{ padding: "0 150px" }}>
       <p className='font-semibold'>Qu'avez-vous en tête ?</p>
       <div className='flex justify-between'>
         {menu.map((item) => (
@@ -20,4 +20,4 @@ const Recommend = () => {
   );
 };
 
-export default Recommend;
+export default FoodCategories;

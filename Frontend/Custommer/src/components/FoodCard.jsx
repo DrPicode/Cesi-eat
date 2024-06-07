@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const FoodCard = ({ data }) => {
   console.log(data);
   return (
-    <div className="flex sm:flex-col lg:flex-row flex-wrap gap-12 justify-between ">
+    <div className="flex sm:flex-col lg:flex-row flex-wrap gap-12">
       {data?.map((item, i) => (
         <Link to="/restaurantPage" key={i}>
           <div className="flex flex-col p-2 md:p-3 rounded-lg bg-lightGray hover:bg-gray-200 transition-all ease-in-out">

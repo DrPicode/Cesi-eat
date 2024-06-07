@@ -80,8 +80,8 @@ const Cart = () => {
           <Button
             class={
               counter === 0
-                ? 'bg-secColor w-full py-3 mt-5 text-white text-2xl transition-all ease-in-out cursor-not-allowed'
-                : 'bg-secColor w-full py-3 mt-5 text-white text-2xl transition-all ease-in-out hover:bg-mainColor'
+                ? 'bg-secColor w-full py-3 mt-2 text-white text-xl transition-all ease-in-out cursor-not-allowed'
+                : 'bg-secColor w-full py-3 mt-2 text-white text-xl transition-all ease-in-out hover:bg-mainColor'
             }
             text={'Valider le panier'}
           />
@@ -94,15 +94,15 @@ const Cart = () => {
             <Button
               class={
                 counter === 0
-                  ? 'bg-secColor w-full py-3 mt-5 text-white text-2xl transition-all ease-in-out cursor-not-allowed'
-                  : 'bg-secColor w-full py-3 mt-5 text-white text-2xl transition-all ease-in-out hover:bg-mainColor'
+                  ? 'bg-secColor w-full py-3 mt-2 text-white text-xl transition-all ease-in-out cursor-not-allowed'
+                  : 'bg-secColor w-full py-3 mt-2 text-white text-xl transition-all ease-in-out hover:bg-mainColor'
               }
               text={'Procéder au paiement'}
             />
           </Link>
           <Link to="/restaurantPage">
             <Button
-              class="bg-gray-300 w-full py-3 mt-5 text-black text-2xl transition-all ease-in-out hover:bg-gray-400"
+              class="bg-gray-300 w-full py-3 mt-2 text-black text-xl transition-all ease-in-out hover:bg-gray-400"
               text={'Retour'}
             />
           </Link>
