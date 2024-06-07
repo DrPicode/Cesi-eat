@@ -1,33 +1,47 @@
-import express from "express";
-import http from 'http'; 
+import express  from 'express';
+import http from 'http';
 import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
-import compression from 'compression'; 
-import cors from 'cors';
-import mongoose, { Mongoose } from "mongoose";
-import router from './router';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
+// Import des routes
+import authRoutes from './routes/AuthRoutes';
+import userRoutes from './routes/UserRoutes';
+
+dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT ;
 
-app.use(cors({
-    credentials: true,
-}));
+// Connexion à MongoDB
+const MONGO_URL = process.env.MONGO_URL as string;
 
-app.use(compression());
-app.use(cookieParser());
-app.use(bodyParser.json())
+mongoose.Promise = Promise;
+mongoose.connect(MONGO_URL)
+    .then(() => console.log('MongoDB connected'))
+    .catch((error: Error) => console.error('MongoDB connection error:', error));
 
-const server = http.createServer(app);
+// Middleware
+app.use(bodyParser.json());
 
-server.listen(8080,() => {
-    console.log('Server running on http://localhost:8080/');
+// Routes
+app.use('/auth', authRoutes);
+app.use('/api', userRoutes);
+
+// Gestion des erreurs 404
+app.use((req, res) => {
+    res.status(404).json({ error: 'Not found' });
 });
 
-const MONGO_URL= 'mongodb://user:ccem@localhost:8082/'
+// Gestion des erreurs globales
+app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    console.error(err.stack);
+    res.status(500).json({ error: 'Internal server error' });
+});
 
-mongoose.Promise = Promise; 
-mongoose.connect(MONGO_URL);
-mongoose.connection.on('error',(error:Error) => console.log(error));
+// Création du serveur
+const server = http.createServer(app);
 
-app.use ('/',router());
+server.listen(PORT, () => {
+    console.log(`Server running on http://localhost:8082`);
+});
