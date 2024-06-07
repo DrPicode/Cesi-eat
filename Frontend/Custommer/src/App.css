@@ -1,38 +1,90 @@
-.App {
-  text-align: center;
+/* global */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+  outline: none;
+  color: #202020;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+ul {
+  list-style: none;
+}
+a {
+  color: unset;
+  text-decoration: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.section__padding {
+  padding: 3rem 5rem;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.section__margin {
+  margin: 3rem 0rem;
+}
+
+/* cart */
+
+.cart__p {
+  color: #808080;
+  font-size: 0.875rem /* 14px */;
+  line-height: 1.25rem /* 20px */;
+}
+.cart__div {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+/* cart */
+@media screen and (max-width: 700px) {
+  .section__padding {
+    padding: 3rem;
   }
-  to {
-    transform: rotate(360deg);
+
+  .section__margin {
+    margin: 3rem 0rem;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .section__padding {
+    padding: 3rem 2rem;
+  }
+
+  .section__margin {
+    margin: 3rem 0rem;
+  }
+}
+
+/* animationX */
+
+.animationX {
+  animation: bounceX 1s infinite;
+}
+.animationY {
+  animation: bounceY 1s infinite;
+}
+
+@keyframes bounceX {
+  0%,
+  100% {
+    transform: translateX(-65%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateX(65%);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+@keyframes bounceY {
+  0%,
+  100% {
+    transform: translateY(-65%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(65%);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
   }
 }
