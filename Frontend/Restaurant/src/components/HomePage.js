@@ -1,25 +1,42 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './HomePage.css';  // Assume you have a CSS file for styling
+import './HomePage.css';
 
 const HomePage = () => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
         navigate('/');
-    }
+    };
 
     return (
-        <div className="home-page">
-            <h1>McDonald's Saint Médard en Jalles</h1>
-            <button>Ouvert</button>
-            <button>Fermé</button>
-            <button onClick={() => navigate('/orders')}>Commandes</button>
-            <button onClick={() => navigate('/products')}>Mes produits</button>
-            <button onClick={() => navigate('/restaurant-info')}>Informations restaurant</button>
-            <button onClick={handleLogout}>Se déconnecter</button>
+        <div className="main-container">
+            <header>
+                <h1>CESI Eats</h1>
+                <h3>Restaurateur</h3>
+            </header>
+            <div className="home-page">
+                <h2>McDonald's Saint Médard en Jalles</h2>
+                <div className="status-buttons">
+                    <button className="primary">Ouvert</button>
+                    <button className="secondary">Fermé</button>
+                </div>
+                <div className="menu-buttons">
+                    <button className="secondary" onClick={() => navigate('/orders')}>Commandes</button>
+                    <button className="secondary" onClick={() => navigate('/products')}>Mes produits</button>
+                    <button className="secondary" onClick={() => navigate('/restaurant-info')}>Informations restaurant</button>
+                    <button className="tertiary" onClick={handleLogout}>Se déconnecter</button>
+                </div>
+            </div>
+            <footer>
+                <nav>
+                    <a href="#">A propos de nous</a>
+                    <a href="#">Aide et Support</a>
+                    <a href="#">Mentions légales</a>
+                </nav>
+            </footer>
         </div>
     );
-}
+};
 
 export default HomePage;

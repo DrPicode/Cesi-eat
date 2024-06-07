@@ -1,82 +1,136 @@
-.home-container {
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Poppins, sans-serif;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    background-color: #f7f7f7;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
-    margin-bottom: 20px;
+header h1,
+header h3 {
+    margin: 0;
 }
 
-.restaurant-info {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 300px;
-}
-
-h2 {
-    margin-bottom: 20px;
-}
-
-.status-buttons {
+.home-page {
+    flex: 1;
     display: flex;
-    justify-content: space-around;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2vh;
+    border-radius: 20px;
+    background-color: #eeeeee;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.home-page h1,
+.home-page h2,
+.home-page h3 {
+    text-align: center;
+}
+
+.home-page h2 {
     margin-bottom: 20px;
 }
 
-.status-btn {
-    padding: 10px 20px;
-    border: 1px solid orange;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.open {
-    background-color: orange;
-    color: white;
-}
-
-.closed {
-    background-color: white;
-    color: orange;
-}
-
+.status-buttons,
 .menu-buttons {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-}
-
-.menu-btn {
-    padding: 10px;
-    border: 1px solid orange;
-    border-radius: 5px;
-    background: none;
-    cursor: pointer;
+    align-items: center;
     width: 100%;
 }
 
-.menu-btn.logout {
+.status-buttons {
+    margin-bottom: 20px;
+}
+
+.status-buttons button,
+.menu-buttons button {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+button.primary {
+    background-color: orange;
     color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+button.secondary {
+    background-color: white;
+    color: black;
+    padding: 10px;
+    border: solid 2px orange;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+button.tertiary {
+    background-color: #202020;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+button.primary:hover {
+    background-color: darkorange;
+}
+
+button.secondary:hover {
+    background-color: lightgray;
+    border-color: lightgray;
+}
+
+button.tertiary:hover {
     background-color: orange;
 }
 
 footer {
-    margin-top: 20px;
+    background-color: orange;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
 }
 
 footer nav {
     display: flex;
     justify-content: space-around;
+    width: 100%;
 }
 
 footer a {
-    color: gray;
+    color: white;
     text-decoration: none;
+    margin: 0 15px;
 }
