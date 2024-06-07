@@ -1,35 +1,65 @@
-.login-container {
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Poppins, sans-serif;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    background-color: #f7f7f7;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.login-box {
-    background: white;
+header h1,
+header h3 {
+    margin: 0;
+}
+
+.login-page {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5vh;
+    border-radius: 20px
+}
+
+.login-page form {
+    background-color: #eaeaea;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    display: flex;
+    flex-direction: column;
 }
 
-.input-group {
+.register {
+    width: 300px;
+}
+
+.login-page input {
     margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: calc(100% - 20px);
 }
 
-.input-group label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-}
-
-.btn {
+.login-page button.primary {
     background-color: orange;
     color: white;
     padding: 10px;
@@ -37,32 +67,47 @@
     border-radius: 5px;
     cursor: pointer;
     width: 100%;
-}
-
-.btn:hover {
-    background-color: darkorange;
-}
-
-.forgot-password {
-    text-align: right;
     margin-bottom: 10px;
 }
 
-.create-account {
-    text-align: center;
-    margin-top: 10px;
+.login-page button.secondary {
+    background-color: white;
+    color: black;
+    padding: 10px;
+    border: solid 2px;
+    border-color: orange;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.login-page button.primary:hover {
+    background-color: darkorange;
+}
+
+.login-page button.secondary:hover {
+    background-color: lightgray;
+    border-color: lightgray;
 }
 
 footer {
-    margin-top: 20px;
+    background-color: orange;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
 }
 
 footer nav {
     display: flex;
     justify-content: space-around;
+    width: 100%;
 }
 
 footer a {
-    color: gray;
+    color: white;
     text-decoration: none;
+    margin: 0 15px;
 }
