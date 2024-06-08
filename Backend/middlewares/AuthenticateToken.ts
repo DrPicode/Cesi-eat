@@ -2,11 +2,13 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
-// Définition du type pour l'utilisateur dans la requête
+// Type for request creation
 interface AuthRequest extends Request {
     user?: JwtPayload;
 }
 
+
+// Token Creation
 const authenticateToken = (req: AuthRequest, res: Response, next: NextFunction) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -20,7 +22,7 @@ const authenticateToken = (req: AuthRequest, res: Response, next: NextFunction) 
         if (!user) {
             return res.status(403).send('Token invalide');
         }
-        // Affecter l'utilisateur vérifié à req.user
+        // Give the token 
         req.user = user;
         next();
     });

@@ -5,7 +5,7 @@ import User, {UserDocument} from '../models/user';
 
 const router = Router();
 
-// Route pour la création d'un nouvel utilisateur
+// New user creation
 router.post('/register', async (req: Request, res: Response) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -21,7 +21,7 @@ router.post('/register', async (req: Request, res: Response) => {
     }
 });
 
-// Route pour l'authentification
+// Authentication
 router.post('/login', async (req: Request, res: Response) => {
     try {
         const user: UserDocument | null = await User.findOne({ username: req.body.username });

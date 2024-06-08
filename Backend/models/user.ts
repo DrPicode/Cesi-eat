@@ -1,4 +1,6 @@
 // models/User.ts
+
+// Model for MongoDB database
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface UserDocument extends Document {

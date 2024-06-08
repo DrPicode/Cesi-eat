@@ -1,4 +1,4 @@
-// routes/userRoutes.ts
+// routes/userRoutes.ts 
 import express, { Request, Response } from 'express';
 import User, {UserData} from '../models/user';
 import authenticateToken from '../middlewares/AuthenticateToken';
@@ -6,7 +6,7 @@ import mongoose, { Types } from 'mongoose';
 
 const router = express.Router();
 
-// Route pour récupérer tous les utilisateurs 
+// GET every users
 router.get('/users', authenticateToken, async (req: Request, res: Response) => {
     try {
         const users = await User.find();
@@ -17,7 +17,7 @@ router.get('/users', authenticateToken, async (req: Request, res: Response) => {
     }
 });
 
-// Route pour mettre à jour un utilisateur
+// Update user
 router.put('/users/:id', authenticateToken, async (req: Request, res: Response) => {
     try {
         const userId = req.params.id;
@@ -29,7 +29,7 @@ router.put('/users/:id', authenticateToken, async (req: Request, res: Response) 
         }
         
 
-        // On ne permet pas la mise à jour du mot de passe directement via cette route
+        // Don't allow password changes here
         if (updates.password) {
             return res.status(400).send('Password update not allowed via this route.');
         }
@@ -48,7 +48,7 @@ router.put('/users/:id', authenticateToken, async (req: Request, res: Response) 
     }
 });
 
-// Route pour supprimer un utilisateur
+// Delete user
 router.delete('/users/:id', authenticateToken, async (req: Request, res: Response) => {
     try {
         const userId = req.params.id;
