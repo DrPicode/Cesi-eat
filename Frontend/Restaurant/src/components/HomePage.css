@@ -33,9 +33,9 @@ header h3 {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 2vh;
+    margin-top: 5vh;
+    margin-bottom: 15vh;
     border-radius: 20px;
-    background-color: #eeeeee;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
 }

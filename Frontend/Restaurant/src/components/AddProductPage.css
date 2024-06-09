@@ -1,0 +1,107 @@
+.add-product-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: Poppins, sans-serif;
+}
+
+header {
+    text-align: center;
+    padding: 10px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header h3 {
+    margin: 5px 0;
+}
+
+.add-product-form {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+}
+
+.add-product-form h2 {
+    margin-bottom: 20px;
+}
+
+.add-product-form input,
+.add-product-form select {
+    padding: 10px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    max-width: 300px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    outline: none;
+}
+
+button.primary {
+    background-color: orange;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+button.secondary {
+    background-color: white;
+    color: black;
+    padding: 10px 20px;
+    border: solid 2px orange;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+button.primary:hover {
+    background-color: darkorange;
+}
+
+button.secondary:hover {
+    background-color: lightgray;
+    border-color: lightgray;
+}
+
+footer {
+    background-color: orange;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+footer nav {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+}
+
+.error {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
