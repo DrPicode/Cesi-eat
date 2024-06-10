@@ -7,7 +7,7 @@ import mongoose, { Types } from 'mongoose';
 const router = express.Router();
 
 // GET every users
-router.get('/users', authenticateToken, async (req: Request, res: Response) => {
+router.get('/', authenticateToken, async (req: Request, res: Response) => {
     try {
         const users = await User.find();
         res.json(users);

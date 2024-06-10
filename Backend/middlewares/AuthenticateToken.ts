@@ -15,7 +15,7 @@ const authenticateToken = (req: AuthRequest, res: Response, next: NextFunction) 
     if (!token) {
         return res.status(401).send('Token non fourni');
     }
-    jwt.verify(token, 'secret_key', (err, user: JwtPayload | undefined) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, user: JwtPayload | undefined) => {
         if (err) {
             return res.status(403).send('Token invalide');
         }

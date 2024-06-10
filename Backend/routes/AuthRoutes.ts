@@ -29,7 +29,7 @@ router.post('/login', async (req: Request, res: Response) => {
             return res.status(404).send('Utilisateur non trouvé');
         }
         if (await bcrypt.compare(req.body.password, user.password)) {
-            const token: string = jwt.sign({ username: user.username }, 'secret_key');
+            const token: string = jwt.sign({ username: user.username }, process.env.JWT_SECRET, {expiresIn : '1h'});
             res.status(200).json({ token });
         } else {
             res.status(401).send('Mot de passe incorrect');

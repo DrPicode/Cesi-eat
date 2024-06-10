@@ -1,6 +1,5 @@
 import express  from 'express';
 import http from 'http';
-import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import {Sequelize}  from 'sequelize';
@@ -41,11 +40,11 @@ sequelize.authenticate().then(() => {
 
 
 // Middleware
-app.use(bodyParser.json());
+app.use(express.json());
 
 // Routes
 app.use('/auth', authRoutes);
-app.use('/api', userRoutes);
+app.use('/users', userRoutes);
 
 // 404 error Management
 app.use((req, res) => {
