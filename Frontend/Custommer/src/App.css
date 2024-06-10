@@ -1,42 +1,103 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* global */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+  outline: none;
+  color: #202020;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+ul {
+  list-style: none;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+a {
+  color: unset;
+  text-decoration: none;
+}
+
+.section__padding {
+  padding: 3rem 5rem;
+}
+
+.section__margin {
+  margin: 3rem 0rem;
+}
+
+/* cart */
+
+.cart__p {
+  color: #404040;
+  font-size: 0.875rem
+    /* 14px */
+  ;
+  line-height: 1.25rem
+    /* 20px */
+  ;
+}
+
+.cart__div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* cart */
+@media screen and (max-width: 700px) {
+  .section__padding {
+    padding: 3rem;
   }
-  to {
-    transform: rotate(360deg);
+
+  .section__margin {
+    margin: 3rem 0rem;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+@media screen and (max-width: 550px) {
+  .section__padding {
+    padding: 3rem 2rem;
+  }
+
+  .section__margin {
+    margin: 3rem 0rem;
   }
 }
 
-.card {
-  padding: 2em;
+/* animationX */
+
+.animationX {
+  animation: bounceX 1s infinite;
 }
 
-.read-the-docs {
-  color: #888;
+.animationY {
+  animation: bounceY 1s infinite;
+}
+
+@keyframes bounceX {
+
+  0%,
+  100% {
+    transform: translateX(-65%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+
+  50% {
+    transform: translateX(65%);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+@keyframes bounceY {
+
+  0%,
+  100% {
+    transform: translateY(-65%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+
+  50% {
+    transform: translateY(65%);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
 }
