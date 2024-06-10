@@ -11,8 +11,8 @@ import userRoutes from './routes/UserRoutes';
 dotenv.config();
 
 const app = express();
-const PORTMG = process.env.MGDBPORT ;
-const PORTPS = process.env.DB_PORT;
+const PORT = process.env.PORT ;
+
 
 const dbName: string = process.env.POSTGRES_DB as string;
 const dbUser: string = process.env.POSTGRES_USER as string;
@@ -60,8 +60,8 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 // Server Creation
 const server = http.createServer(app);
 
-server.listen(PORTMG, () => {
-    console.log(`Server running on http://localhost:8082`);
+server.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
 });
 
 
