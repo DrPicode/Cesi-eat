@@ -28,6 +28,7 @@ export const personalized = [
     title: 'Mc Donalds',
     place: 'Saint Médard en Jalles',
     category: 'Fast Food',
+    delivered: true,
     distance: [
       {
         icon: CiDeliveryTruck,
@@ -46,6 +47,7 @@ export const personalized = [
     title: 'Sushi Shop',
     place: 'Mérignac',
     category: 'Asiatique',
+    delivered: true,
     distance: [
       {
         icon: CiDeliveryTruck,
@@ -64,6 +66,7 @@ export const personalized = [
     title: 'Eat Salad',
     place: 'Le Haillan',
     category: 'Salade',
+    delivered: true,
     distance: [
       {
         icon: CiDeliveryTruck,
@@ -82,6 +85,7 @@ export const personalized = [
     title: 'Heiko',
     place: 'Bordeaux Lac',
     category: 'Poké',
+    delivered: true,
     distance: [
       {
         icon: CiDeliveryTruck,

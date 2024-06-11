@@ -8,6 +8,7 @@ import CheckOut from './container/CheckOut';
 import Login from './container/Login';
 import Register from './container/Register';
 import Confirmation from './container/Confirmation';
+import Profile from './container/Profile';
 
 function App() {
   return (
@@ -20,6 +21,8 @@ function App() {
         <Route path="/CheckOut" element={<CheckOut />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/Register" element={<Register />} />
+        <Route path="*" element={<h1>Not Found</h1>} />
+        <Route path="/Profile" element={<Profile />} />
       </Routes>
       <Footer />
     </Router>

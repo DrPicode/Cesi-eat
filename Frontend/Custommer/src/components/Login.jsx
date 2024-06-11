@@ -7,6 +7,31 @@ import shape2 from '../assets/shape.png';
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
+    }
+
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+    }
+
+    const submit = async () => {
+        //TODO: Check values with regex
+        await fetch("http://localhost:8080/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email,
+                password
+            })
+        }).then(r =>r.text()).then(r => console.log(r)).catch(e => console.error(e));
+    }
+
     return (
         <div className="flex flex-col items-center justify-center bg-white w-full h-full">
             <div className="relative section__padding w-full h-full">
@@ -21,15 +46,19 @@ const Login = () => {
             <div className="flex flex-col items-center w-full max-w-md p-10 bg-gray-100 rounded-lg">
                 <h2 className="text-2xl font-bold mb-6 text-black">Se connecter</h2>
                 <input
+                    value={email}
+                    onChange={handleEmailChange}
                     className="w-full p-3 mb-4 border border-gray-300 rounded-lg"
                     type="text"
-                    placeholder="Adresse e-mail ou téléphone"
+                    placeholder="Adresse e-mail"
                 />
                 <div className="relative w-full mb-4">
                     <input
                         className="w-full p-3 border border-gray-300 rounded-lg"
                         type={showPassword ? 'text' : 'password'}
                         placeholder="Mot de passe"
+                        value={password}
+                        onChange={handlePasswordChange}
                     />
                     <div
                         className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
@@ -49,7 +78,7 @@ const Login = () => {
                             Retour
                         </button>
                     </Link>
-                    <button className="w-1/2 ml-2 py-3 text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-all">
+                    <button className="w-1/2 ml-2 py-3 text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-all" onClick={submit}>
                         Connexion
                     </button>
                 </div>
