@@ -53,7 +53,7 @@ header h3 {
 }
 
 button.primary {
-    background-color: orange;
+    background-color: #FC8019;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -66,14 +66,14 @@ button.secondary {
     background-color: white;
     color: black;
     padding: 10px 20px;
-    border: solid 2px orange;
+    border: solid 2px #FC8019;
     border-radius: 5px;
     cursor: pointer;
     margin-top: 20px;
 }
 
 button.primary:hover {
-    background-color: darkorange;
+    background-color: rgb(205, 113, 0);
 }
 
 button.secondary:hover {
@@ -82,7 +82,7 @@ button.secondary:hover {
 }
 
 footer {
-    background-color: orange;
+    background-color: #FC8019;
     display: flex;
     justify-content: center;
     align-items: center;

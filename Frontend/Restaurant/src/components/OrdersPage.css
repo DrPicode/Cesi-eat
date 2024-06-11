@@ -70,7 +70,7 @@ header h3 {
 }
 
 button.primary {
-    background-color: orange;
+    background-color: #FC8019;
     color: white;
     padding: 10px;
     border: none;
@@ -85,13 +85,13 @@ button.secondary {
     color: black;
     padding: 10px;
     border: solid 2px;
-    border-color: orange;
+    border-color: #FC8019;
     border-radius: 5px;
     cursor: pointer;
 }
 
 button.primary:hover {
-    background-color: darkorange;
+    background-color: rgb(205, 113, 0);
 }
 
 button.secondary:hover {
@@ -100,7 +100,7 @@ button.secondary:hover {
 }
 
 footer {
-    background-color: orange;
+    background-color: #FC8019;
     display: flex;
     flex-direction: column;
     align-items: center;
