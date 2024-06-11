@@ -3,8 +3,8 @@ import { Link, useLocation } from 'react-router-dom';
 import Button from './Button';
 import { AiOutlineMinus, AiOutlinePlus } from 'react-icons/ai';
 
-const Cart = () => {
-  const location = useLocation(); // Obtenir l'emplacement actuel
+const Cart = ({ selectedSandwich, selectedAccompagnement, selectedBoisson }) => {
+  const location = useLocation(); // Obtain actual location
 
   // counter
   const [counter, setCounter] = useState(1);
@@ -41,9 +41,9 @@ const Cart = () => {
           <div>
             <h5>Menu McFirst</h5>
             <p className=" text-lightGray">
-              Poulet
-              Frite
-              Coca
+              {selectedSandwich ? selectedSandwich.charAt(0).toUpperCase() + selectedSandwich.slice(1) : ''}<br />
+              {selectedAccompagnement ? selectedAccompagnement.charAt(0).toUpperCase() + selectedAccompagnement.slice(1) : ''}<br />
+              {selectedBoisson ? selectedBoisson.charAt(0).toUpperCase() + selectedBoisson.slice(1) : ''}
             </p> <p className="">5,90 €</p>
           </div>
           <div className="flex justify-between items-center">
