@@ -1,5 +1,7 @@
+// AddProductPage.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; // Importez axios pour effectuer des appels API
 import './AddProductPage.css';
 
 const AddProductPage = () => {
@@ -29,13 +31,31 @@ const AddProductPage = () => {
         return errors;
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         const validationErrors = validate();
         if (Object.keys(validationErrors).length === 0) {
-            // Logique pour enregistrer le produit (peut inclure l'appel à une API)
-            console.log({ productName, productPrice, productType });
-            navigate('/products');
+            try {
+                // Appel à l'API pour enregistrer le produit
+                const response = await axios.post('/api/products', {
+                    name: productName,
+                    price: productPrice,
+                    type: productType
+                });
+
+                if (response.data.success) {
+                    // Rediriger vers la page des produits si l'enregistrement est réussi
+                    navigate('/products');
+                } else {
+                    // Afficher une erreur générale si l'enregistrement a échoué
+                    setErrors({ general: 'Erreur lors de l\'enregistrement du produit. Veuillez réessayer.' });
+                }
+            } catch (error) {
+                // Afficher une erreur générale en cas d'échec de la requête
+                console.error('Erreur lors de la tentative d\'enregistrement du produit:', error);
+                setErrors({ general: 'Une erreur est survenue. Veuillez réessayer.' });
+            }
         } else {
+            // Afficher les erreurs de validation
             setErrors(validationErrors);
         }
     };
@@ -83,6 +103,7 @@ const AddProductPage = () => {
 
                 <button className="primary" onClick={handleSave}>Enregistrer</button>
                 <button className="secondary" onClick={handleBack}>Retour</button>
+                {errors.general && <p className="error">{errors.general}</p>}
             </div>
             <footer>
                 <nav>
