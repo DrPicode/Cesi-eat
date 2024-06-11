@@ -174,7 +174,6 @@ const SignUpPage = () => {
                     <button className="primary" type="submit">Inscription</button>
                     {errors.general && <p className="error">{errors.general}</p>}
                 </form><br></br>
-                <button className="secondary" type="button" onClick={handleBack}>Retour</button>
             </div>
             <footer>
                 <nav>
