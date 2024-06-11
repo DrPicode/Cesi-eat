@@ -83,7 +83,7 @@ button.secondary {
     background-color: white;
     color: black;
     padding: 5px 10px;
-    border: solid 2px orange;
+    border: solid 2px #FC8019;
     border-radius: 5px;
     cursor: pointer;
     margin-right: 5px;
@@ -104,11 +104,11 @@ button.secondary:hover {
 }
 
 button.tertiary:hover {
-    background-color: orange;
+    background-color: #FC8019;
 }
 
 button.primary {
-    background-color: orange;
+    background-color: #FC8019;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -119,11 +119,11 @@ button.primary {
 }
 
 button.primary:hover {
-    background-color: darkorange;
+    background-color: rgb(205, 113, 0);
 }
 
 footer {
-    background-color: orange;
+    background-color: #FC8019;
     display: flex;
     justify-content: center;
     align-items: center;

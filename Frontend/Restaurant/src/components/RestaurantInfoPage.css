@@ -27,37 +27,33 @@ header h3 {
     margin: 0;
 }
 
-.login-page {
+.info-page {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border-radius: 20px
+    padding: 20px;
 }
 
-.login-page form {
+.info-box {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     border-radius: 10px;
     width: 300px;
-    display: flex;
-    flex-direction: column;
+    background-color: #fff;
 }
 
-.register {
-    width: 300px;
-}
-
-.login-page input {
+.info-box p {
     margin-bottom: 15px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: calc(100% - 20px);
 }
 
-.login-page button.primary {
+.info-box strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.primary {
     background-color: #FC8019;
     color: white;
     padding: 10px;
@@ -68,25 +64,8 @@ header h3 {
     margin-bottom: 10px;
 }
 
-.login-page button.secondary {
-    background-color: white;
-    color: black;
-    padding: 10px;
-    border: solid 2px;
-    border-color: #FC8019;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-    margin-bottom: 10px;
-}
-
-.login-page button.primary:hover {
+.primary:hover {
     background-color: rgb(205, 113, 0);
-}
-
-.login-page button.secondary:hover {
-    background-color: lightgray;
-    border-color: lightgray;
 }
 
 footer {

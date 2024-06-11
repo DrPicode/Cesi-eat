@@ -15,12 +15,12 @@ const UpdateProductPage = () => {
         const fetchProduct = (id) => {
             // Replace this with your actual data fetching logic
             const productData = [
-                { id: 1, name: 'Mc First', type: 'Menu', price: '5,60 €' },
-                { id: 2, name: 'Mc First Poulet', type: 'Sandwich', price: '3,90 €' },
-                { id: 3, name: 'Coca Cola 33cl', type: 'Boisson', price: '1,60 €' },
-                { id: 4, name: 'Moyennes Frites', type: 'Accompagnement', price: '2,00 €' },
-                { id: 5, name: 'Moyennes Potatoes', type: 'Accompagnement', price: '2,00 €' },
-                { id: 6, name: 'Mc First Poisson', type: 'Sandwich', price: '3,90 €' },
+                { id: 1, name: 'Mc First', type: 'Menu', price: '5,60' },
+                { id: 2, name: 'Mc First Poulet', type: 'Sandwich', price: '3,90' },
+                { id: 3, name: 'Coca Cola 33cl', type: 'Boisson', price: '1,60' },
+                { id: 4, name: 'Moyennes Frites', type: 'Accompagnement', price: '2,00' },
+                { id: 5, name: 'Moyennes Potatoes', type: 'Accompagnement', price: '2,00' },
+                { id: 6, name: 'Mc First Poisson', type: 'Sandwich', price: '3,90' },
             ];
             return productData.find(product => product.id === parseInt(id));
         };
@@ -43,8 +43,8 @@ const UpdateProductPage = () => {
 
         if (!productPrice) {
             errors.productPrice = "Le prix du produit est requis.";
-        } else if (!/^\d+(\.\d{1,2})?$/.test(productPrice)) {
-            errors.productPrice = "Le prix doit être un nombre décimal.";
+        } else if (!/^\d+(\,\d{1,2})?$/.test(productPrice)) {
+            errors.productPrice = "Le prix est incorrect.";
         }
 
         if (!productType) {
@@ -98,12 +98,12 @@ const UpdateProductPage = () => {
                     value={productType}
                     onChange={(e) => setProductType(e.target.value)}
                 >
-                    <option value="">Type de produit</option>
-                    <option value="Menu">Menu</option>
-                    <option value="Sandwich">Sandwich</option>
-                    <option value="Boisson">Boisson</option>
-                    <option value="Accompagnement">Accompagnement</option>
-                    <option value="Dessert">Dessert</option>
+                    <option value="">Type de produits</option>
+                    <option value="menu">Menu</option>
+                    <option value="sandwich">Sandwichs</option>
+                    <option value="boisson">Boissons</option>
+                    <option value="accompagnement">Accompagnements</option>
+                    <option value="dessert">Desserts</option>
                 </select>
                 {errors.productType && <p className="error">{errors.productType}</p>}
 
@@ -112,7 +112,7 @@ const UpdateProductPage = () => {
             </div>
             <footer>
                 <nav>
-                    <a href="#">A propos de nous</a>
+                    <a href="https://www.cesi.fr">A propos de nous</a>
                     <a href="#">Aide et Support</a>
                     <a href="#">Mentions légales</a>
                 </nav>

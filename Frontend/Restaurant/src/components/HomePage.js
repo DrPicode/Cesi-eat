@@ -30,7 +30,7 @@ const HomePage = () => {
             </div>
             <footer>
                 <nav>
-                    <a href="#">A propos de nous</a>
+                    <a href="https://www.cesi.fr">A propos de nous</a>
                     <a href="#">Aide et Support</a>
                     <a href="#">Mentions légales</a>
                 </nav>

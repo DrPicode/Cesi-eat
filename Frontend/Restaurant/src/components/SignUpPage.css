@@ -1,3 +1,4 @@
+/* SignUpPage.css */
 body,
 html {
     margin: 0;
@@ -27,16 +28,16 @@ header h3 {
     margin: 0;
 }
 
-.login-page {
+.signup-page {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border-radius: 20px
+    border-radius: 20px;
 }
 
-.login-page form {
+.signup-page form {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     border-radius: 10px;
@@ -45,11 +46,8 @@ header h3 {
     flex-direction: column;
 }
 
-.register {
-    width: 300px;
-}
-
-.login-page input {
+.signup-page input,
+.signup-page select {
     margin-bottom: 15px;
     padding: 10px;
     border: 1px solid #ccc;
@@ -57,7 +55,7 @@ header h3 {
     width: calc(100% - 20px);
 }
 
-.login-page button.primary {
+.signup-page button.primary {
     background-color: #FC8019;
     color: white;
     padding: 10px;
@@ -68,7 +66,7 @@ header h3 {
     margin-bottom: 10px;
 }
 
-.login-page button.secondary {
+.signup-page button.secondary {
     background-color: white;
     color: black;
     padding: 10px;
@@ -80,11 +78,11 @@ header h3 {
     margin-bottom: 10px;
 }
 
-.login-page button.primary:hover {
+.signup-page button.primary:hover {
     background-color: rgb(205, 113, 0);
 }
 
-.login-page button.secondary:hover {
+.signup-page button.secondary:hover {
     background-color: lightgray;
     border-color: lightgray;
 }
@@ -109,4 +107,11 @@ footer a {
     color: white;
     text-decoration: none;
     margin: 0 15px;
+}
+
+.error {
+    color: red;
+    font-size: 0.8em;
+    margin-top: -10px;
+    margin-bottom: 10px;
 }
