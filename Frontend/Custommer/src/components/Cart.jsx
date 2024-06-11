@@ -1,29 +1,28 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Button from './Button';
-import { AiOutlineMinus, AiOutlinePlus } from 'react-icons/ai';
 
 const Cart = ({ selectedSandwich, selectedAccompagnement, selectedBoisson }) => {
   const location = useLocation(); // Obtain actual location
 
-  // counter
-  const [counter, setCounter] = useState(1);
-
-  //increase counter
-  const increase = () => {
-    setCounter((count) => count + 1);
-  };
-
-  //decrease counter
-  const decrease = () => {
-    if (counter >= 1) setCounter((count) => count - 1);
-  };
-
-  // counter
-
   const isCheckoutRoute = location.pathname.includes('checkout');
   const isConfirmationRoute = location.pathname.includes('confirmation');
   const isRestaurantRoute = location.pathname.includes('restaurantPage');
+
+  const submit = async () => {
+    //TODO: Check values with regex
+    await fetch("http://localhost:8080/order/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          selectedSandwich,
+          selectedAccompagnement,
+          selectedBoisson
+        })
+    }).then(r =>r.text()).then(r => console.log(r)).catch(e => console.error(e));
+}
 
   return (
     <div className=" border p-2 rounded-lg md:border-none w-full font-medium" style={{ maxWidth: "550px" }}>
@@ -31,7 +30,6 @@ const Cart = ({ selectedSandwich, selectedAccompagnement, selectedBoisson }) => 
         <h5 className=" text-2xl">
           {isConfirmationRoute ? 'Votre commande N°123456789 ' : 'Panier'}
         </h5>
-        <p className="text-base">1 article</p>
       </div>
       <div className="flex flex-col px-10 gap-5 mb-5">
         <p>
@@ -45,15 +43,6 @@ const Cart = ({ selectedSandwich, selectedAccompagnement, selectedBoisson }) => 
               {selectedAccompagnement ? selectedAccompagnement.charAt(0).toUpperCase() + selectedAccompagnement.slice(1) : ''}<br />
               {selectedBoisson ? selectedBoisson.charAt(0).toUpperCase() + selectedBoisson.slice(1) : ''}
             </p> <p className="">5,90 €</p>
-          </div>
-          <div className="flex justify-between items-center">
-            <button onClick={decrease}>
-              <AiOutlineMinus />
-            </button>
-            <p className="m-1">{counter}</p>
-            <button onClick={increase}>
-              <AiOutlinePlus />
-            </button>
           </div>
         </div>
       </div>
@@ -79,11 +68,7 @@ const Cart = ({ selectedSandwich, selectedAccompagnement, selectedBoisson }) => 
       {isRestaurantRoute && !isConfirmationRoute && (
         <Link to="/checkout">
           <Button
-            class={
-              counter === 0
-                ? 'bg-secColor w-full py-3 mt-2 text-white text-xl transition-all ease-in-out cursor-not-allowed'
-                : 'bg-secColor w-full py-3 mt-2 text-white text-xl transition-all ease-in-out hover:bg-mainColor'
-            }
+            class={'bg-secColor w-full py-3 mt-2 text-white text-xl transition-all ease-in-out hover:bg-mainColor'}
             text={'Valider le panier'}
           />
         </Link>
@@ -93,11 +78,8 @@ const Cart = ({ selectedSandwich, selectedAccompagnement, selectedBoisson }) => 
         <>
           <Link to="/confirmation">
             <Button
-              class={
-                counter === 0
-                  ? 'bg-secColor w-full py-3 mt-2 text-white text-xl transition-all ease-in-out cursor-not-allowed'
-                  : 'bg-secColor w-full py-3 mt-2 text-white text-xl transition-all ease-in-out hover:bg-mainColor'
-              }
+              onClick={() => submit()}
+              class={'bg-secColor w-full py-3 mt-2 text-white text-xl transition-all ease-in-out hover:bg-mainColor'}
               text={'Procéder au paiement'}
             />
           </Link>
