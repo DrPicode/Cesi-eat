@@ -243,7 +243,7 @@
                 selectedSandwich={selectedSandwich} 
                 selectedAccompagnement={selectedAccompagnement} 
                 selectedBoisson={selectedBoisson} 
-              />
+            />
           </div>
         </div>
       </div>
