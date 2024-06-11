@@ -1,6 +1,6 @@
-// JSX
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './OrdersPage.css';
 
 const OrdersPage = () => {
@@ -21,10 +21,39 @@ const OrdersPage = () => {
             price: "6,90 €"
         }
     ];
+
     const navigate = useNavigate();
 
-    const handleLogin = () => {
-        navigate('/home');
+    const handleAccept = async (orderId) => {
+        try {
+            // Remplacer l'URL par celle de votre API backend
+            const response = await axios.post(`/api/orders/${orderId}/accept`);
+            if (response.data.success) {
+                alert('Commande acceptée avec succès');
+                // Actualiser les commandes ou mettre à jour l'état si nécessaire
+            } else {
+                alert('Erreur lors de l\'acceptation de la commande');
+            }
+        } catch (error) {
+            console.error('Erreur lors de l\'acceptation de la commande:', error);
+            alert('Une erreur est survenue. Veuillez réessayer.');
+        }
+    };
+
+    const handleReject = async (orderId) => {
+        try {
+            // Remplacer l'URL par celle de votre API backend
+            const response = await axios.post(`/api/orders/${orderId}/reject`);
+            if (response.data.success) {
+                alert('Commande refusée avec succès');
+                // Actualiser les commandes ou mettre à jour l'état si nécessaire
+            } else {
+                alert('Erreur lors du refus de la commande');
+            }
+        } catch (error) {
+            console.error('Erreur lors du refus de la commande:', error);
+            alert('Une erreur est survenue. Veuillez réessayer.');
+        }
     };
 
     return (
@@ -42,8 +71,8 @@ const OrdersPage = () => {
                             <p>{order.items}</p>
                             <p>{order.price}</p>
                             <div className="order-buttons">
-                                <button className="secondary">Refuser</button>
-                                <button className="primary">Accepter</button>
+                                <button className="secondary" onClick={() => handleReject(order.id)}>Refuser</button>
+                                <button className="primary" onClick={() => handleAccept(order.id)}>Accepter</button>
                             </div>
                         </div>
                     ))}
