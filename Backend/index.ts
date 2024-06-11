@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import {Sequelize}  from 'sequelize';
 
+import cors from "cors";
+
 // Route Import
 import authRoutes from './routes/AuthRoutes';
 import userRoutes from './routes/UserRoutes';
@@ -29,9 +31,9 @@ mongoose.connect(MONGO_URL)
 
 const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
     host: process.env.POSTGRES_HOST,
-    dialect: 'postgres', 
+    dialect: 'postgres',
 });
-    
+
 sequelize.authenticate().then(() => {
     console.log('SQL database connected');
 }).catch((error:Error) => {
@@ -40,8 +42,18 @@ sequelize.authenticate().then(() => {
 
 
 // Middleware
+app.use(cors());
 app.use(express.json());
 
+
+app.get("/test", (req, res) => {
+    res.status(201).send('Test');
+});
+app.post("/test", (req, res) => {
+    console.log(req.body);
+    res.status(201).send('Test');
+
+})
 // Routes
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
@@ -63,6 +75,3 @@ const server = http.createServer(app);
 server.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
-
-
-

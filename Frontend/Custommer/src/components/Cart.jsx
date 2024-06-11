@@ -74,6 +74,7 @@ const Cart = () => {
         <p>{isConfirmationRoute ? 'Total payé' : 'Total'}</p>
         <p>8,90 €</p>
       </div>
+      <div className="h-5"></div>
 
       {isRestaurantRoute && !isConfirmationRoute && (
         <Link to="/checkout">
