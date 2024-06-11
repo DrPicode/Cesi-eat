@@ -10,12 +10,12 @@ const ProductsPage = () => {
     useEffect(() => {
         // Simulating fetching data from a database
         const fetchedProducts = [
-            { id: 1, name: 'Mc First', type: 'menu', price: '5,60 €' },
-            { id: 2, name: 'Mc First Poulet', type: 'sandwich', price: '3,90 €' },
-            { id: 3, name: 'Coca Cola 33cl', type: 'boisson', price: '1,60 €' },
-            { id: 4, name: 'Moyennes Frites', type: 'accompagnement', price: '2,00 €' },
-            { id: 5, name: 'Moyennes Potatoes', type: 'accompagnement', price: '2,00 €' },
-            { id: 6, name: 'Mc First Poisson', type: 'sandwich', price: '3,90 €' },
+            { id: 1, name: 'Mc First', type: 'menu', price: '5,60' },
+            { id: 2, name: 'Mc First Poulet', type: 'sandwich', price: '3,90' },
+            { id: 3, name: 'Coca Cola 33cl', type: 'boisson', price: '1,60' },
+            { id: 4, name: 'Moyennes Frites', type: 'accompagnement', price: '2,00' },
+            { id: 5, name: 'Moyennes Potatoes', type: 'accompagnement', price: '2,00' },
+            { id: 6, name: 'Mc First Poisson', type: 'sandwich', price: '3,90' },
         ];
         setProducts(fetchedProducts);
     }, []);
@@ -50,6 +50,7 @@ const ProductsPage = () => {
                     <option value="sandwich">Sandwichs</option>
                     <option value="boisson">Boissons</option>
                     <option value="accompagnement">Accompagnements</option>
+                    <option value="dessert">Desserts</option>
                 </select>
                 <div className="products-list">
                     {filteredProducts.map(product => (
@@ -59,7 +60,7 @@ const ProductsPage = () => {
                                 <p>{product.type}</p>
                             </div>
                             <div className="product-actions">
-                                <span>{product.price}</span>
+                                <span>{product.price}€</span>
                                 <button className="secondary" onClick={() => handleUpdate(product.id)}>Modifier</button>
                             </div>
                         </div>
@@ -69,7 +70,7 @@ const ProductsPage = () => {
             </div>
             <footer>
                 <nav>
-                    <a href="#">A propos de nous</a>
+                    <a href="https://www.cesi.fr">A propos de nous</a>
                     <a href="#">Aide et Support</a>
                     <a href="#">Mentions légales</a>
                 </nav>
