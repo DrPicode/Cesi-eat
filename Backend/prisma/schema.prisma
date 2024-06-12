@@ -14,74 +14,82 @@ generator client {
 }
 
 model User {
-  Id_User        Int       @id @default(autoincrement())
-  username       String
-  password       String
-  userfirstname  String
-  email          String
-  phone          String
-  status         String
-  addresses      Address[] @relation("UserAddresses")
-  restaurants    Restaurant[] @relation("UserRestaurants")
-  orders         Orders[]
-  Delivery       Delivery? @relation(fields: [id_delivery], references: [Id_Delivery])
-  id_delivery    Int?
+  Id_User       Int      @id @default(autoincrement())
+  Username      String
+  Password      String?
+  email         String?
+  Firstname     String
+  Phone         String
+  Status        String?
+  Is_Deleted    Boolean
+  orders        Orders[]
+  lives_at      Lives_At[]
+  deliveries    delivery[]
 }
 
 model Address {
-  Id_Address  Int      @id @default(autoincrement())
-  Adress      String
+  Id_Address  Int       @id @default(autoincrement())
+  Address     String
   Is_Deleted  Boolean
-  users       User[]   @relation("UserAddresses")
-  restaurants Is_At[]
   orders      Orders[]
+  lives_at    Lives_At[]
+  is_at       Is_At[]
 }
 
 model Order_Status {
-  Id_Order_Status Int      @id @default(autoincrement())
+  Id_Order_Status Int     @id @default(autoincrement())
   Order_Status    String
   orders          Orders[]
 }
 
 model Restaurant_Type {
-  Id_Type Int         @id @default(autoincrement())
-  Type    String
+  Id_Type     Int         @id @default(autoincrement())
+  Type        String
   restaurants Restaurant[]
 }
 
 model Restaurant {
-  Id_Restaurant Int        @id @default(autoincrement())
+  Id_Restaurant Int       @id @default(autoincrement())
   Name          String
   Is_Deleted    Boolean
   Id_Type       Int
+  Id_User       Int
   type          Restaurant_Type @relation(fields: [Id_Type], references: [Id_Type])
-  addresses     Is_At[]
+  user          User            @relation(fields: [Id_User], references: [Id_User])
   orders        Orders[]
+  is_at         Is_At[]
 }
 
 model Orders {
-  Order_ID      Int      @id @default(autoincrement())
-  Order_Date    DateTime
-  Boisson       String?
-  Sandwitch     String?
+  Order_ID       Int      @id @default(autoincrement())
+  Order_Date     DateTime
+  Sandwitch      String?
+  Boisson        String?
   Accompagnement String?
-  Price         Decimal  @db.Decimal(15, 2)
-  Delivery_Fees Decimal? @db.Decimal(15, 2)
-  Service_Fees  Decimal? @db.Decimal(15, 2)
-  Delivery_Hour DateTime
-  Delivery_Code Int
-  Is_Deleted    Boolean
-  Id_User       Int
-  Id_Address    Int
+  Price          Decimal  @db.Decimal(15, 2)
+  Delivery_Fees  Decimal? @db.Decimal(15, 2)
+  Service_Fees   String?
+  Delivery_Hour  DateTime
+  Delivery_Code  Int
+  Is_Deleted     Boolean
+  Id_Address     Int
   Id_Order_Status Int
-  Id_Deliveryman Int
-  Id_Restaurant Int
+  Id_Restaurant  Int
+  Id_User        Int
+  address        Address      @relation(fields: [Id_Address], references: [Id_Address])
+  orderStatus    Order_Status @relation(fields: [Id_Order_Status], references: [Id_Order_Status])
+  restaurant     Restaurant   @relation(fields: [Id_Restaurant], references: [Id_Restaurant])
+  user           User         @relation(fields: [Id_User], references: [Id_User])
+  deliveries     delivery[]
+}
 
-  user         User        @relation(fields: [Id_User], references: [Id_User])
-  address      Address     @relation(fields: [Id_Address], references: [Id_Address])
-  orderStatus  Order_Status @relation(fields: [Id_Order_Status], references: [Id_Order_Status])
-  deliveryman  User        @relation(fields: [Id_Deliveryman], references: [Id_User])
-  restaurant   Restaurant  @relation(fields: [Id_Restaurant], references: [Id_Restaurant])
+model Lives_At {
+  Id_User    Int
+  Id_Address Int
+  user       User    @relation(fields: [Id_User], references: [Id_User])
+  address    Address @relation(fields: [Id_Address], references: [Id_Address])
+  
+  @@id([Id_User, Id_Address])
 }
 
 model Is_At {
@@ -89,12 +97,16 @@ model Is_At {
   Id_Address    Int
   restaurant    Restaurant @relation(fields: [Id_Restaurant], references: [Id_Restaurant])
   address       Address    @relation(fields: [Id_Address], references: [Id_Address])
-
+  
   @@id([Id_Restaurant, Id_Address])
 }
 
-model Delivery {
-  Id_Delivery   Int @id @default(autoincrement())
-  Id_User       Int
-  user          User @relation(fields: [Id_User], references: [Id_User])
+model delivery {
+  Id_User     Int
+  Order_ID    Int
+  Id_Delivery Int @id @default(autoincrement())
+  user        User    @relation(fields: [Id_User], references: [Id_User])
+  order       Orders  @relation(fields: [Order_ID], references: [Order_ID])
+  
+  @@id([Id_User, Order_ID])
 }
