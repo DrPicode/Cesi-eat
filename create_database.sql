@@ -79,7 +79,7 @@ CREATE TABLE Is_At(
 );
  
 
-CREATE TABLE delivery(
+CREATE TABLE Delivery(
    Id_User INT,
    Order_ID INT,
    Id_Delivery INT,

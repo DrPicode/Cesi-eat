@@ -105,7 +105,7 @@ model Is_At {
 model delivery {
   Id_User     Int
   Order_ID    Int
-  Id_Delivery Int     @id @default(autoincrement())
+  Id_Delivery Int     @default(autoincrement())
   user        User_   @relation(fields: [Id_User], references: [Id_User])
   order       Orders  @relation(fields: [Order_ID], references: [Order_ID])
   

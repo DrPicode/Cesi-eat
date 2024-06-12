@@ -10,7 +10,7 @@ const Intro = () => {
       <div className="hidden lg:block absolute top-40 -left-64">
         <img src={shape1} alt="" />
       </div>
-      <div className="hidden lg:block absolute top-40 -right-40">
+      <div className="hidden lg:block absolute top-40 right-0 z-10">
         <img src={shape2} alt="" />
       </div>
       <div className="flex flex-col lg:flex-row" style={{ marginLeft: "150px" }}>
@@ -31,7 +31,7 @@ const Intro = () => {
             </p>
           </div>
         </div>
-        <div className="flex-1">
+        <div className="flex-1 z-20">
           <img src={img1} alt="" width={300} />
         </div>
       </div>

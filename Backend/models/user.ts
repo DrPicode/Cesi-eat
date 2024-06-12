@@ -4,21 +4,21 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface UserDocument extends Document {
-    userfirstname : string;
-    username: string;
+    firstName: string;
+    lastName: string;
     password: string;
-    email : string; 
-    phone : string; 
-    status : string ; 
+    email: string;
+    phone: string;
+    role: string ;
 }
 
 const userSchema: Schema<UserDocument> = new mongoose.Schema({
-    username: String,
-    password: String, 
-    userfirstname : String,
-    email : String,
-    phone : String,
-    status : String, 
+    firstName: String,
+    lastName: String,
+    password: String,
+    email: String,
+    phone: String,
+    role: String,
 });
 
 interface UserData extends UserDocument, Document {

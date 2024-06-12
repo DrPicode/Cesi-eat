@@ -3,6 +3,7 @@ import logo from '../assets/logo.png';
 import Button from './Button';
 import { Link } from 'react-router-dom';
 import { CiSearch } from 'react-icons/ci';
+
 const Navbar = () => {
   return (
     <div className="section__padding flex gap-1 justify-between items-center w-full h-16 ">

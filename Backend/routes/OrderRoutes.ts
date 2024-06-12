@@ -11,8 +11,9 @@ router.post('/', validateOrder, async (req : express.Request, res : express.Resp
   const {
     Order_ID,
     Order_Date,
-    Boisson,
-    Sandwitch,
+    Sandwich,
+    Drink,
+    Side_Food,
     Price,
     Delivery_Fees,
     Service_Fees,
@@ -22,7 +23,6 @@ router.post('/', validateOrder, async (req : express.Request, res : express.Resp
     Is_Deleted,
     Id_Address,
     Id_Order_Status,
-    Id_Deliveryman,
     Id_Restaurant
   } = req.body;
 
@@ -31,8 +31,9 @@ router.post('/', validateOrder, async (req : express.Request, res : express.Resp
       data: {
         Order_ID,
         Order_Date: new Date(Order_Date),
-        Boisson,
-        Sandwitch,
+        Sandwich,
+        Drink,
+        Side_Food,
         Price,
         Delivery_Fees,
         Service_Fees,
@@ -42,7 +43,6 @@ router.post('/', validateOrder, async (req : express.Request, res : express.Resp
         Is_Deleted,
         Id_Address,
         Id_Order_Status,
-        Id_Deliveryman,
         Id_Restaurant,
       },
     });
