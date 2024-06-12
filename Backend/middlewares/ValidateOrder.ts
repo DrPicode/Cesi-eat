@@ -5,8 +5,9 @@ export const validateOrder = (req: Request, res: Response, next: NextFunction) =
   const {
     Order_ID,
     Order_Date,
-    Boisson,
-    Sandwitch,
+    Sandwich,
+    Drink,
+    Side_Food,
     Price,
     Delivery_Fees,
     Service_Fees,
@@ -16,11 +17,10 @@ export const validateOrder = (req: Request, res: Response, next: NextFunction) =
     Is_Deleted,
     Id_Address,
     Id_Order_Status,
-    Id_Deliveryman,
     Id_Restaurant
   } = req.body;
 
-  if (!Order_Date || !Price || !Delivery_Hour || !Delivery_Code  || !Id_Address || !Id_Order_Status || !Id_Deliveryman || !Id_Restaurant) {
+  if (!Order_Date || !Price || !Delivery_Hour || !Delivery_Code  || !Id_Address || !Id_Order_Status || !Id_User || !Id_Restaurant) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
