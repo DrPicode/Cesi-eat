@@ -13,22 +13,23 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User {
-  Id_User       Int      @id @default(autoincrement())
-  Username      String
-  Password      String?
-  email         String?
-  Firstname     String
-  Phone         String
-  Status        String?
-  Is_Deleted    Boolean
-  orders        Orders[]
-  lives_at      Lives_At[]
-  deliveries    delivery[]
+model User_ {
+  Id_User    Int      @id @default(autoincrement())
+  Lastname   String
+  Password   String?
+  Email      String?
+  Firstname  String
+  Phone      String
+  Status     String?
+  Is_Deleted Boolean
+  restaurants Restaurant[]
+  orders     Orders[]
+  lives_at   Lives_At[]
+  deliveries delivery[]
 }
 
 model Address {
-  Id_Address  Int       @id @default(autoincrement())
+  Id_Address  Int      @id @default(autoincrement())
   Address     String
   Is_Deleted  Boolean
   orders      Orders[]
@@ -55,7 +56,7 @@ model Restaurant {
   Id_Type       Int
   Id_User       Int
   type          Restaurant_Type @relation(fields: [Id_Type], references: [Id_Type])
-  user          User            @relation(fields: [Id_User], references: [Id_User])
+  user          User_           @relation(fields: [Id_User], references: [Id_User])
   orders        Orders[]
   is_at         Is_At[]
 }
@@ -63,9 +64,9 @@ model Restaurant {
 model Orders {
   Order_ID       Int      @id @default(autoincrement())
   Order_Date     DateTime
-  Sandwitch      String?
-  Boisson        String?
-  Accompagnement String?
+  Sandwich       String?
+  Drink          String?
+  Side_Food      String?
   Price          Decimal  @db.Decimal(15, 2)
   Delivery_Fees  Decimal? @db.Decimal(15, 2)
   Service_Fees   String?
@@ -79,15 +80,15 @@ model Orders {
   address        Address      @relation(fields: [Id_Address], references: [Id_Address])
   orderStatus    Order_Status @relation(fields: [Id_Order_Status], references: [Id_Order_Status])
   restaurant     Restaurant   @relation(fields: [Id_Restaurant], references: [Id_Restaurant])
-  user           User         @relation(fields: [Id_User], references: [Id_User])
+  user           User_        @relation(fields: [Id_User], references: [Id_User])
   deliveries     delivery[]
 }
 
 model Lives_At {
   Id_User    Int
   Id_Address Int
-  user       User    @relation(fields: [Id_User], references: [Id_User])
-  address    Address @relation(fields: [Id_Address], references: [Id_Address])
+  user       User_    @relation(fields: [Id_User], references: [Id_User])
+  address    Address  @relation(fields: [Id_Address], references: [Id_Address])
   
   @@id([Id_User, Id_Address])
 }
@@ -104,8 +105,8 @@ model Is_At {
 model delivery {
   Id_User     Int
   Order_ID    Int
-  Id_Delivery Int @id @default(autoincrement())
-  user        User    @relation(fields: [Id_User], references: [Id_User])
+  Id_Delivery Int     @id @default(autoincrement())
+  user        User_   @relation(fields: [Id_User], references: [Id_User])
   order       Orders  @relation(fields: [Order_ID], references: [Order_ID])
   
   @@id([Id_User, Order_ID])
