@@ -1,0 +1,113 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User_ {
+  Id_User    Int      @id @default(autoincrement())
+  Lastname   String
+  Password   String?
+  Email      String?
+  Firstname  String
+  Phone      String
+  Status     String?
+  Is_Deleted Boolean
+  restaurants Restaurant[]
+  orders     Orders[]
+  lives_at   Lives_At[]
+  deliveries delivery[]
+}
+
+model Address {
+  Id_Address  Int      @id @default(autoincrement())
+  Address     String
+  Is_Deleted  Boolean
+  orders      Orders[]
+  lives_at    Lives_At[]
+  is_at       Is_At[]
+}
+
+model Order_Status {
+  Id_Order_Status Int     @id @default(autoincrement())
+  Order_Status    String
+  orders          Orders[]
+}
+
+model Restaurant_Type {
+  Id_Type     Int         @id @default(autoincrement())
+  Type        String
+  restaurants Restaurant[]
+}
+
+model Restaurant {
+  Id_Restaurant Int       @id @default(autoincrement())
+  Name          String
+  Is_Deleted    Boolean
+  Id_Type       Int
+  Id_User       Int
+  type          Restaurant_Type @relation(fields: [Id_Type], references: [Id_Type])
+  user          User_           @relation(fields: [Id_User], references: [Id_User])
+  orders        Orders[]
+  is_at         Is_At[]
+}
+
+model Orders {
+  Order_ID       Int      @id @default(autoincrement())
+  Order_Date     DateTime
+  Sandwich       String?
+  Drink          String?
+  Side_Food      String?
+  Price          Decimal  @db.Decimal(15, 2)
+  Delivery_Fees  Decimal? @db.Decimal(15, 2)
+  Service_Fees   String?
+  Delivery_Hour  DateTime
+  Delivery_Code  Int
+  Is_Deleted     Boolean
+  Id_Address     Int
+  Id_Order_Status Int
+  Id_Restaurant  Int
+  Id_User        Int
+  address        Address      @relation(fields: [Id_Address], references: [Id_Address])
+  orderStatus    Order_Status @relation(fields: [Id_Order_Status], references: [Id_Order_Status])
+  restaurant     Restaurant   @relation(fields: [Id_Restaurant], references: [Id_Restaurant])
+  user           User_        @relation(fields: [Id_User], references: [Id_User])
+  deliveries     delivery[]
+}
+
+model Lives_At {
+  Id_User    Int
+  Id_Address Int
+  user       User_    @relation(fields: [Id_User], references: [Id_User])
+  address    Address  @relation(fields: [Id_Address], references: [Id_Address])
+  
+  @@id([Id_User, Id_Address])
+}
+
+model Is_At {
+  Id_Restaurant Int
+  Id_Address    Int
+  restaurant    Restaurant @relation(fields: [Id_Restaurant], references: [Id_Restaurant])
+  address       Address    @relation(fields: [Id_Address], references: [Id_Address])
+  
+  @@id([Id_Restaurant, Id_Address])
+}
+
+model delivery {
+  Id_User     Int
+  Order_ID    Int
+  Id_Delivery Int     @default(autoincrement())
+  user        User_   @relation(fields: [Id_User], references: [Id_User])
+  order       Orders  @relation(fields: [Order_ID], references: [Order_ID])
+  
+  @@id([Id_User, Order_ID])
+}

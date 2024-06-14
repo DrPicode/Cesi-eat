@@ -32,12 +32,12 @@ router.post('/register', async (req: Request, res: Response) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         const user: UserDocument = new User({
-            userfirstname : req.body.userfirstname,
-            username: req.body.username,
+            firstName : req.body.firstName,
+            lastName: req.body.lastName,
             password: hashedPassword,
             email : req.body.email,
             phone : req.body.phone,
-            status : req.body.status
+            role : req.body.role
         });
         await user.save();
         res.status(201).send('Utilisateur créé avec succès');
@@ -57,7 +57,7 @@ router.post('/login', async (req: Request, res: Response) => {
             return res.status(404).send('Utilisateur non trouvé');
         }
         if (await bcrypt.compare(req.body.password, user.password)) {
-            const accessToken = generateAccessToken({ userId: user._id.toString(), username: user.username });
+            const accessToken = generateAccessToken({ userId: user._id.toString(), lastName: user.lastName });
             const refreshToken = generateRefreshToken(user._id.toString());
             res.status(200).json({ accessToken, refreshToken });
         } else {

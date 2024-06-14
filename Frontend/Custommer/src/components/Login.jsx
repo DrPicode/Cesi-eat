@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BsEye, BsEyeSlash } from 'react-icons/bs';
 import shape1 from '../assets/Union.png';
 import shape2 from '../assets/shape.png';
 
-
 const Login = () => {
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
@@ -18,18 +19,45 @@ const Login = () => {
         setPassword(e.target.value);
     }
 
+    const validateForm = () => {
+        if (!email.trim()) {
+            setError("Veuillez entrer une adresse e-mail.");
+            return false;
+        }
+        if (!password.trim()) {
+            setError("Veuillez entrer un mot de passe.");
+            return false;
+        }
+        return true;
+    }
+
     const submit = async () => {
-        //TODO: Check values with regex
-        await fetch("http://localhost:8080/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email,
-                password
-            })
-        }).then(r =>r.text()).then(r => console.log(r)).catch(e => console.error(e));
+        if (validateForm()) {
+            try {
+                const response = await fetch("http://localhost:8080/auth/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password
+                    })
+                });
+
+                if (response.ok) {
+                    // Rediriger vers la page d'accueil avec le statut connecté
+                    navigate('/', { state: { isLoggedIn: true } });
+                } else {
+                    // Afficher le message d'erreur sur la page
+                    const errorMessage = await response.text();
+                    setError(`Erreur lors de la connexion : ${errorMessage}`);
+                }
+            } catch (error) {
+                console.error(error);
+                setError('Une erreur est survenue lors de la connexion.');
+            }
+        }
     }
 
     return (
@@ -38,7 +66,7 @@ const Login = () => {
                 <div className="hidden lg:block absolute top-40 -left-64">
                     <img src={shape1} alt="" />
                 </div>
-                <div className="hidden lg:block absolute top-40 -right-44">
+                <div className="hidden lg:block absolute top-40 right-0">
                     <img src={shape2} alt="" />
                 </div>
             </div>
@@ -66,6 +94,7 @@ const Login = () => {
                     >
                         {showPassword ? <BsEyeSlash /> : <BsEye />}
                     </div>
+                    {error && <p className="text-red-500 mb-4">{error}</p>}
                 </div>
                 <div className="w-full flex justify-end mb-4">
                     <Link to="/forgot-password" className="text-sm text-black hover:underline">
