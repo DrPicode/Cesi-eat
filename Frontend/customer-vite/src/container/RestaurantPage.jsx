@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import Cart from '../components/Cart';
 import restaurantpage from '../assets/mcfirst.jpg';
 import {Link, useParams} from 'react-router-dom';
-import {ArticleType} from "@prisma/client";
 
 
 const RestaurantPage = () => {
@@ -23,16 +22,7 @@ const RestaurantPage = () => {
             setRestaurant(data);
         });
     }, [id]);
-
-  const handleAddToCart = () => {
-    if (selectedSandwich && selectedSideFood && selectedDrink) {
-      console.log('Sandwich :', selectedSandwich);
-      console.log('SideFood :', selectedSideFood);
-      console.log('Drink :', selectedDrink);
-    } else {
-      alert('Veuillez sélectionner un sandwich, un accompagnement et une boisson.');
-    }
-  };
+    
   const handleCardClick = (type, value) => {
     switch (type) {
       case 'sandwich':
@@ -48,7 +38,7 @@ const RestaurantPage = () => {
         break;
     }
   };
-
+  //console.log(ArticleType);
   return (
   <>
     {restaurant && restaurant.articles ? (
@@ -125,7 +115,8 @@ const RestaurantPage = () => {
                     <div className="mt-5">
                       <h3 className="font-medium text-lg py-2">Choisissez votre sandwich</h3>
                       <div className="flex flex-wrap justify-between">
-                        {restaurant?.articles && restaurant.articles.filter(x => x.type === ArticleType.MainCourse).map((item, i) => (
+
+                        {restaurant?.articles && restaurant.articles.filter(x => x.type === 'MainCourse').map((item, i) => (
                             <div
                                 key={i}
                                 className={`w-full md:w-1/3 p-2 rounded-lg shadow-md cursor-pointer ${selectedSandwich === item.id_article ? 'border-4 border-orange-400' : ''
@@ -147,7 +138,7 @@ const RestaurantPage = () => {
                     <div className="mt-5">
                       <h3 className="font-medium text-lg py-2">Choisissez votre accompagnement</h3>
                       <div className="flex flex-wrap justify-between">
-                        {restaurant?.articles && restaurant.articles.filter(x => x.type === ArticleType.SideDish).map((item, i) => (
+                        {restaurant?.articles && restaurant.articles.filter(x => x.type === 'SideDish').map((item, i) => (
                             <div
                                 key={i}
                                 className={`w-full md:w-1/3 p-2 rounded-lg shadow-md cursor-pointer ${selectedSideFood === item.id_article ? 'border-4 border-orange-400' : ''
@@ -168,7 +159,7 @@ const RestaurantPage = () => {
                     <div className="mt-5">
                       <h3 className="font-medium text-lg py-2">Choisissez votre boisson</h3>
                       <div className="flex flex-wrap justify-between">
-                        {restaurant?.articles && restaurant.articles.filter(x => x.type === ArticleType.Drink).map((item, i) => (
+                        {restaurant?.articles && restaurant.articles.filter(x => x.type === 'Drink').map((item, i) => (
                             <div
                                 key={i}
                                 className={`w-full md:w-1/3 p-2 rounded-lg shadow-md cursor-pointer ${selectedDrink === item.id_article ? 'border-4 border-orange-400' : ''
