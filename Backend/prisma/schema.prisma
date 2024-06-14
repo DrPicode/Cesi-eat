@@ -11,103 +11,153 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
+  engineType = "library"
+  previewFeatures = ["relationJoins"]
 }
 
-model User_ {
-  Id_User    Int      @id @default(autoincrement())
-  Lastname   String
-  Password   String?
-  Email      String?
-  Firstname  String
-  Phone      String
-  Status     String?
-  Is_Deleted Boolean
-  restaurants Restaurant[]
-  orders     Orders[]
-  lives_at   Lives_At[]
-  deliveries delivery[]
+enum UserType {
+  Client
+  Cooker
+  DeliveryMan
 }
 
-model Address {
-  Id_Address  Int      @id @default(autoincrement())
-  Address     String
-  Is_Deleted  Boolean
-  orders      Orders[]
-  lives_at    Lives_At[]
-  is_at       Is_At[]
+enum RestaurantType {
+  Restaurant
+  FastFood
+  FoodTruck
+  Asian
+  Poke
+  Salad
 }
 
-model Order_Status {
-  Id_Order_Status Int     @id @default(autoincrement())
-  Order_Status    String
-  orders          Orders[]
-}
+model User {
+  id_user    Int      @id @default(autoincrement())
+  lastName   String
+  password   String?
+  email      String?  @unique
+  firstName  String
+  phone      String
+  is_deleted  Boolean @default(false)
 
-model Restaurant_Type {
-  Id_Type     Int         @id @default(autoincrement())
-  Type        String
-  restaurants Restaurant[]
+  type       UserType @default(Client)
+  restaurant Restaurant?
+
+  address Address @relation(fields: [address_id_address], references: [id_address])
+  address_id_address Int
+
+  cart        Cart[]
+
+  @@map("user")
 }
 
 model Restaurant {
-  Id_Restaurant Int       @id @default(autoincrement())
-  Name          String
-  Is_Deleted    Boolean
-  Id_Type       Int
-  Id_User       Int
-  type          Restaurant_Type @relation(fields: [Id_Type], references: [Id_Type])
-  user          User_           @relation(fields: [Id_User], references: [Id_User])
-  orders        Orders[]
-  is_at         Is_At[]
+  id_restaurant  Int      @id @default(autoincrement())
+  name          String
+  thumbnail     String
+  is_deleted    Boolean   @default(false)
+
+  type          RestaurantType
+
+  user User @relation(fields: [user_id_user], references: [id_user])
+  user_id_user Int @unique
+
+  articles      Article[]
+
+  address Address?
+
+  @@map("restaurant")
 }
 
-model Orders {
-  Order_ID       Int      @id @default(autoincrement())
-  Order_Date     DateTime
-  Sandwich       String?
-  Drink          String?
-  Side_Food      String?
-  Price          Decimal  @db.Decimal(15, 2)
-  Delivery_Fees  Decimal? @db.Decimal(15, 2)
-  Service_Fees   String?
-  Delivery_Hour  DateTime
-  Delivery_Code  Int
-  Is_Deleted     Boolean
-  Id_Address     Int
-  Id_Order_Status Int
-  Id_Restaurant  Int
-  Id_User        Int
-  address        Address      @relation(fields: [Id_Address], references: [Id_Address])
-  orderStatus    Order_Status @relation(fields: [Id_Order_Status], references: [Id_Order_Status])
-  restaurant     Restaurant   @relation(fields: [Id_Restaurant], references: [Id_Restaurant])
-  user           User_        @relation(fields: [Id_User], references: [Id_User])
-  deliveries     delivery[]
+enum ArticleType {
+  Entry
+  MainCourse
+  SideDish
+  Dessert
+  Drink
 }
 
-model Lives_At {
-  Id_User    Int
-  Id_Address Int
-  user       User_    @relation(fields: [Id_User], references: [Id_User])
-  address    Address  @relation(fields: [Id_Address], references: [Id_Address])
-  
-  @@id([Id_User, Id_Address])
+model Article {
+  id_article  Int      @id @default(autoincrement())
+  name        String
+  price       Float
+  thumbnail   String
+  is_deleted  Boolean
+
+  type       ArticleType
+
+  restaurant Restaurant @relation(fields: [restaurant_id_restaurant], references: [id_restaurant])
+  restaurant_id_restaurant Int
+
+  carts CartArticle[]
+
+  @@map("article")
 }
 
-model Is_At {
-  Id_Restaurant Int
-  Id_Address    Int
-  restaurant    Restaurant @relation(fields: [Id_Restaurant], references: [Id_Restaurant])
-  address       Address    @relation(fields: [Id_Address], references: [Id_Address])
-  
-  @@id([Id_Restaurant, Id_Address])
+model Address {
+  id_address  Int      @id @default(autoincrement())
+  address      String
+  city        String
+  postalCode  String
+  is_deleted  Boolean
+
+  orders Order[]
+  users User[]
+
+  restaurant Restaurant? @relation(fields: [restaurant_id_restaurant], references: [id_restaurant])
+  restaurant_id_restaurant Int? @unique
+
+  @@map("address")
 }
 
-model delivery {
-  Id_User     Int
-  Order_ID    Int
-  Id_Delivery Int     @default(autoincrement())
-  user        User_   @relation(fields: [Id_User], references: [Id_User])
-  order       Orders  @relation(fields: [Order_ID], references: [Order_ID])
-  
-  @@id([Id_User, Order_ID])
+model Cart {
+  id_cart     Int      @id @default(autoincrement())
+  is_deleted  Boolean
+
+  user User @relation(fields: [user_id_user], references: [id_user])
+  user_id_user Int
+
+  articles CartArticle[]
+
+  order Order @relation(fields: [order_id_order], references: [id_order])
+  order_id_order Int @unique
+
+  @@map("cart")
+}
+
+model CartArticle {
+  cartId    Int
+  articleId Int
+  quantity  Int
+  cart      Cart     @relation(fields: [cartId], references: [id_cart])
+  article   Article  @relation(fields: [articleId], references: [id_article])
+
+  @@id([cartId, articleId])
+}
+
+enum OrderStatus {
+  Paid
+  Preparing
+  Delivering
+  Delivered
+  Cancelled
+}
+
+model Order {
+  id_order    Int      @id @default(autoincrement())
+  is_deleted  Boolean
+
+  delivery_hour  DateTime
+  delivery_code  Int
+  price          Float
+  delivery_fees  Float?
+  service_fees   Float?
+
+  address Address @relation(fields: [address_id_address], references: [id_address])
+  address_id_address Int
+
+  cart Cart?
+
+  status OrderStatus
+
+  @@map("order")
 }

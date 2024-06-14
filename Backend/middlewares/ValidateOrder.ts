@@ -3,24 +3,22 @@ import { Request, Response, NextFunction } from 'express';
 
 export const validateOrder = (req: Request, res: Response, next: NextFunction) => {
   const {
-    Order_ID,
-    Order_Date,
-    Sandwich,
-    Drink,
-    Side_Food,
-    Price,
-    Delivery_Fees,
-    Service_Fees,
-    Id_User,
-    Delivery_Hour,
-    Delivery_Code,
-    Is_Deleted,
-    Id_Address,
-    Id_Order_Status,
-    Id_Restaurant
+    order_date,
+    sandwich,
+    drink,
+    side_food,
+    price,
+    delivery_fees,
+    service_fees,
+    delivery_hour,
+    delivery_code,
+    is_deleted,
+    id_address,
+    id_order_status,
+    id_restaurant
   } = req.body;
 
-  if (!Order_Date || !Price || !Delivery_Hour || !Delivery_Code  || !Id_Address || !Id_Order_Status || !Id_User || !Id_Restaurant) {
+  if (!order_date || !price || !delivery_hour || !delivery_code  || !id_address || !id_order_status || !id_restaurant) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 

@@ -1,0 +1,132 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User_ {
+  id_user    Int      @id @default(autoincrement())
+  lastname   String
+  password   String?
+  email      String?  @unique
+  firstname  String
+  phone      String
+  status     String?
+  is_deleted Boolean
+
+  restaurants Restaurant[]
+  orders     Orders[]
+  lives_at   Lives_At[]
+  deliveries delivery[]
+
+  @@map("user_")
+}
+
+model Address {
+  id_address  Int      @id @default(autoincrement())
+  address     String
+  is_deleted  Boolean
+  orders      Orders[]
+  lives_at    Lives_At[]
+  is_at       Is_At[]
+
+  @@map("address")
+}
+
+model Order_Status {
+  id_order_status Int     @id @default(autoincrement())
+  order_status    String
+  orders          Orders[]
+
+  @@map("order_status")
+}
+
+model Restaurant_Type {
+  id_type     Int         @id @default(autoincrement())
+  type        String
+  restaurants Restaurant[]
+
+  @@map("restaurant_type")
+}
+
+model Restaurant {
+  id_restaurant Int       @id @default(autoincrement())
+  name          String
+  is_deleted    Boolean
+  id_type       Int
+  id_user       Int
+  type          Restaurant_Type @relation(fields: [id_type], references: [id_type])
+  user          User_           @relation(fields: [id_user], references: [id_user])
+  orders        Orders[]
+  is_at         Is_At[]
+
+  @@map("restaurant")
+}
+
+model Orders {
+  order_id       Int      @id @default(autoincrement())
+  order_date     DateTime
+  sandwich       String?
+  drink          String?
+  side_food      String?
+  price          Decimal  @db.Decimal(15, 2)
+  delivery_fees  Decimal? @db.Decimal(15, 2)
+  service_fees   String?
+  delivery_hour  DateTime
+  delivery_code  Int
+  is_deleted     Boolean
+  id_address     Int
+  id_order_status Int
+  id_restaurant  Int
+  id_user        Int
+  address        Address      @relation(fields: [id_address], references: [id_address])
+  orderStatus    Order_Status @relation(fields: [id_order_status], references: [id_order_status])
+  restaurant     Restaurant   @relation(fields: [id_restaurant], references: [id_restaurant])
+  user           User_        @relation(fields: [id_user], references: [id_user])
+  deliveries     delivery[]
+
+  @@map("orders")
+}
+
+model Lives_At {
+  id_user    Int
+  id_address Int
+  user       User_    @relation(fields: [id_user], references: [id_user])
+  address    Address  @relation(fields: [id_address], references: [id_address])
+  
+  @@id([id_user, id_address])
+
+  @@map("lives_at")
+}
+
+model Is_At {
+  id_restaurant Int
+  id_address    Int
+  restaurant    Restaurant @relation(fields: [id_restaurant], references: [id_restaurant])
+  address       Address    @relation(fields: [id_address], references: [id_address])
+  
+  @@id([id_restaurant, id_address])
+
+  @@map("is_at")
+}
+
+model delivery {
+  id_user     Int
+  order_id    Int
+  id_delivery Int     @default(autoincrement())
+  user        User_   @relation(fields: [id_user], references: [id_user])
+  order       Orders  @relation(fields: [order_id], references: [order_id])
+  
+  @@id([id_user, order_id])
+
+  @@map("delivery")
+}

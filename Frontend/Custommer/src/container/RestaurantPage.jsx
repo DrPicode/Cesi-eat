@@ -239,10 +239,10 @@
                 </div>
               </div>
             </div>
-            <Cart 
-                selectedSandwich={selectedSandwich} 
-                selectedAccompagnement={selectedAccompagnement} 
-                selectedBoisson={selectedBoisson} 
+            <Cart
+                selectedSandwich={selectedSandwich}
+                selectedAccompagnement={selectedAccompagnement}
+                selectedBoisson={selectedBoisson}
             />
           </div>
         </div>
