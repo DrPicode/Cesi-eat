@@ -1,36 +1,36 @@
 CREATE TABLE User_(
-   Id_User INT,
+   Id_User SERIAL,
    Lastname VARCHAR(55) NOT NULL,
-   Password VARCHAR(50),
-   Email VARCHAR(50),
+   Password VARCHAR(500) NOT NULL,
+   Email VARCHAR(50) NOT NULL UNIQUE,
    Firstname VARCHAR(55) NOT NULL,
    Phone VARCHAR(50) NOT NULL,
-   Status VARCHAR(50),
+   Status VARCHAR(50) NOT NULL,
    Is_Deleted BOOLEAN  NOT NULL,
    PRIMARY KEY(Id_User)
 );
 
 CREATE TABLE Address(
-   Id_Address INT,
+   Id_Address SERIAL,
    Address VARCHAR(80) NOT NULL,
    Is_Deleted BOOLEAN  NOT NULL,
    PRIMARY KEY(Id_Address)
 );
 
 CREATE TABLE Order_Status(
-   Id_Order_Status INT,
+   Id_Order_Status SERIAL,
    Order_Status VARCHAR(50) NOT NULL,
    PRIMARY KEY(Id_Order_Status)
 );
 
 CREATE TABLE Restaurant_Type(
-   Id_Type INT,
+   Id_Type SERIAL,
    Type VARCHAR(50) NOT NULL,
    PRIMARY KEY(Id_Type)
 );
 
 CREATE TABLE Restaurant(
-   Id_Restaurant INT ,
+   Id_Restaurant SERIAL,
    Name VARCHAR(60) NOT NULL,
    Is_Deleted BOOLEAN  NOT NULL,
    Id_Type INT NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE Restaurant(
 );
 
 CREATE TABLE Orders(
-   Order_ID INT,
+   Order_ID SERIAL,
    Order_Date DATE NOT NULL,
    Sandwich VARCHAR(50),
    Drink VARCHAR(50),

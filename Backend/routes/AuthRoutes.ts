@@ -1,49 +1,75 @@
-import { Router, Request, Response } from 'express';
+import {Router, Request, Response} from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import User, {UserDocument} from '../models/user';
-import RefreshToken from '../models/RefreshToken';
 import { JwtUserPayload } from '../models/Token';
+import {prisma} from "../database/client";
+import {generateAccessToken, generateRefreshToken} from "../utils/jwt";
+import {UserType} from "@prisma/client";
 
 const router = Router();
 
-const generateAccessToken = (user: JwtUserPayload) => {
-    return jwt.sign({ userId: user.userId }, process.env.JWT_SECRET!, { expiresIn: '1h' });
-};
-
-const generateRefreshToken = (userId: string) => {
-    const refreshToken = jwt.sign({ userId }, process.env.JWT_REFRESH_SECRET!);
-    const expiryDate = new Date();
-    expiryDate.setDate(expiryDate.getDate() + 7); // 7 jours de validité
-
-    const newRefreshToken = new RefreshToken({
-        userId,
-        token: refreshToken,
-        expiryDate,
-    });
-
-    newRefreshToken.save();
-    return refreshToken;
-};
-
-
 // New user creation
 router.post('/register', async (req: Request, res: Response) => {
+    const {lastName, firstName, email, phone, password, status, address, city, postalCode} = req.body;
+
+    // Check if all fields are provided
+    if (!lastName || !firstName || !email || !phone || !password || !status || !address || !city || !postalCode) {
+        return res.status(400).send('Tous les champs sont requis');
+    }
+
+    console.log("User:", {lastName, firstName, email, phone, password, status, address, city, postalCode})
+
+    // Check if user already exists
+    const user = await prisma.user.findUnique({
+        where: {
+            email
+        }
+    });
+    if (user) {
+        return res.status(400).send('Utilisateur déjà existant');
+    }
+
+    // Create user
     try {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        const user: UserDocument = new User({
-            firstName : req.body.firstName,
-            lastName: req.body.lastName,
-            password: hashedPassword,
-            email : req.body.email,
-            phone : req.body.phone,
-            role : req.body.role
+        let userType: UserType;
+        switch (status) {
+            case "consommateur":
+                userType = UserType.Client;
+                break;
+            case "livreur":
+                userType = UserType.DeliveryMan;
+                break;
+            case "restaurateur":
+                userType = UserType.Cooker;
+                break;
+        }
+
+        const passwordCrypted = await bcrypt.hash(password, 10);
+        const user = await prisma.user.create({
+            data: {
+                email,
+                firstName,
+                lastName,
+                password: passwordCrypted,
+                phone,
+                type: userType,
+                address: {
+                    create: {
+                        address,
+                        city,
+                        postalCode,
+                        is_deleted: false
+                    }
+
+                }
+            }
         });
-        await user.save();
-        res.status(201).send('Utilisateur créé avec succès');
+        console.log({user});
+        delete user.password;
+        return res.status(201).json(user);
     } catch (error) {
         console.error(error);
-        res.status(500).send('Erreur lors de la création de l\'utilisateur');
+        return res.status(500).send('Erreur lors de la création de l\'utilisateur');
     }
 });
 
@@ -51,17 +77,33 @@ router.post('/register', async (req: Request, res: Response) => {
 router.post('/login', async (req: Request, res: Response) => {
     try {
         if (!req.body.email || !req.body.password) throw new Error("Email et mot de passe manquant");
-        const user: UserDocument | null = await User.findOne({ email : req.body.email });
-        console.log({user});
+        const user = await prisma.user.findUnique(
+            {
+                where: {
+                    email: req.body.email
+                }
+            }
+        );
+        console.log("User", user);
         if (!user) {
             return res.status(404).send('Utilisateur non trouvé');
         }
         if (await bcrypt.compare(req.body.password, user.password)) {
-            const accessToken = generateAccessToken({ userId: user._id.toString(), lastName: user.lastName });
-            const refreshToken = generateRefreshToken(user._id.toString());
-            res.status(200).json({ accessToken, refreshToken });
+            const accessToken = generateAccessToken({ userId: user.id_user.toString(), lastName: user.lastName });
+            const refreshToken = generateRefreshToken(user.id_user.toString());
+            console.log({refreshToken, accessToken});
+            res.cookie("refresh", refreshToken, {
+                httpOnly: true,
+                maxAge: 7 * 60 * 24 * 30, // 7 jours,
+                path: "/",
+            })
+
+            return res.status(200).json({
+                accessToken,
+                userId: user.id_user
+            });
         } else {
-            res.status(401).send('Mot de passe incorrect');
+            return res.status(401).send('Mot de passe incorrect');
         }
     } catch (error) {
         console.error(error);
@@ -69,15 +111,19 @@ router.post('/login', async (req: Request, res: Response) => {
     }
 });
 
-// Route pour rafraîchir le token
-router.post('/token', async (req: Request, res: Response) => {
-    const { token } = req.body;
+// Route pour rafraîchir le access token
+router.get('/token', async (req: Request, res: Response) => {
+    const rawCookies = req.headers.cookie;
+    console.log({rawCookies});
+    const token = rawCookies?.split(';').find((c: string) => c?.trim()?.startsWith('refresh='))?.split('=')[1];
+    console.log({token});
     if (!token) {
         return res.status(401).send('Refresh token non fourni');
     }
     try {
         jwt.verify(token, process.env.JWT_REFRESH_SECRET!, (error: jwt.VerifyErrors | null, decoded: object | undefined) => {
             if (error || !decoded) {
+                res.cookie("refresh", "", { httpOnly: true, maxAge: 0 })
                 return res.status(403).send('Refresh token invalide');
             }
 
@@ -89,6 +135,12 @@ router.post('/token', async (req: Request, res: Response) => {
         console.error(error);
         res.status(500).send('Erreur lors du rafraîchissement du token');
     }
+});
+
+// Route pour se déconnecter
+router.get('/logout', async (req: Request, res: Response) => {
+    res.cookie("refresh", "", { httpOnly: true, maxAge: 0 })
+    res.status(204).send();
 });
 
 export default router;
