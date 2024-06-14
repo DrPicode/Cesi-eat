@@ -12,7 +12,7 @@ import cors from "cors";
 import authRoutes from './routes/AuthRoutes';
 import userRoutes from './routes/UserRoutes';
 import restaurantRoutes from './routes/RestaurantRoutes';
-import orderRoutes from './routes/OrderRoutes';
+//import orderRoutes from './routes/OrderRoutes';
 import addressRoutes from './routes/AddressesRoutes';
 import contentRoutes from "./routes/ContentRoutes";
 import cartRoutes from "./routes/CartRoutes";
