@@ -16,6 +16,7 @@ import restaurantRoutes from './routes/RestaurantRoutes';
 import addressRoutes from './routes/AddressesRoutes';
 import contentRoutes from "./routes/ContentRoutes";
 import cartRoutes from "./routes/CartRoutes";
+import articleRoutes from "./routes/ArticleRoutes";
 
 dotenv.config();
 
@@ -55,6 +56,7 @@ app.use("/content", contentRoutes)
 app.use("/addresses", addressRoutes);
 app.use("/carts", cartRoutes);
 // app.use('/orders', orderRoutes);
+app.use("/articles",articleRoutes)
 
 // 404 error Management
 app.use((req, res) => {

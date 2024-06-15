@@ -1,52 +1,69 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './LoginPage.css';
+import { BsEye, BsEyeSlash } from 'react-icons/bs';
+import {authProxy} from "../proxy/auth.proxy.js";
+import {useSnapshot} from "valtio";
 
-const LoginPage = () => {
+const Login = () => {
     const navigate = useNavigate();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
-    const validateEmail = (email) => {
-        const re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-        return re.test(String(email).toLowerCase());
-    };
+    const authSnap = useSnapshot(authProxy);
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        setError('');
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
+    }
 
-        if (!validateEmail(email)) {
-            setError('Veuillez entrer une adresse e-mail valide.');
-            return;
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+    }
+
+    const validateForm = () => {
+        if (!email.trim()) {
+            setError("Veuillez entrer une adresse e-mail.");
+            return false;
         }
-
-        if (password.length < 6) {
-            setError('Le mot de passe doit comporter au moins 6 caractères.');
-            return;
+        if (!password.trim()) {
+            setError("Veuillez entrer un mot de passe.");
+            return false;
         }
+        return true;
+    }
 
-        // Simuler une vérification d'authentification
-        if (email === 'test@cesi.fr' && password === 'password') {
-            navigate('/home');
-        } else {
-            setError('Adresse e-mail ou mot de passe incorrect.');
+    const submit = async () => {
+        if (validateForm()) {
+            try {
+                const response = await fetch("/api/auth/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password
+                    })
+                });
+
+                if (response.ok) {
+                    const body = await response.json();
+                    console.log({body});
+                    authProxy.token = body.accessToken;
+                    authProxy.userId = body.userId;
+                    navigate(`/`);
+                } else {
+                    // Afficher le message d'erreur sur la page
+                    const errorMessage = await response.text();
+                    setError(`Erreur lors de la connexion : ${errorMessage}`);
+                }
+            } catch (error) {
+                console.error(error);
+                setError('Une erreur est survenue lors de la connexion.');
+            }
         }
-
-        // Préparer l'intégration avec le backend
-        // try {
-        //     const response = await axios.post('/api/login', { email, password });
-        //     if (response.data.success) {
-        //         navigate('/home');
-        //     } else {
-        //         setError('Adresse e-mail ou mot de passe incorrect.');
-        //     }
-        // } catch (error) {
-        //     console.error('Erreur lors de la tentative de connexion:', error);
-        //     setError('Une erreur est survenue. Veuillez réessayer.');
-        // }
-    };
+    }
 
     return (
         <div className="main-container">
@@ -60,18 +77,26 @@ const LoginPage = () => {
                         type="email"
                         placeholder="Adresse e-mail"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={handleEmailChange}
                         required
                     />
+                    <div>
                     <input
                         type="password"
                         placeholder="Mot de passe"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={handlePasswordChange}
                         required
                     />
+                    <div
+                        className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+                        onClick={() => setShowPassword(!showPassword)}
+                    >
+                        {showPassword ? <BsEyeSlash /> : <BsEye />}
+                    </div>
                     {error && <p className="error-message">{error}</p>}
                     <button className="primary" type="submit">Connexion</button>
+                    </div>
                 </form>
                 <br />
                 <div className='register'>
