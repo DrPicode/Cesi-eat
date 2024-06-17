@@ -2,7 +2,9 @@ import React from 'react';
 
 const Button = ( prop  ) =>
 {
-  return <button className={`${prop.class}  rounded-lg`}>{prop.text}</button>;
+  return <button
+      onClick={prop.onClick}
+      className={`${prop.class}  rounded-lg`}>{prop.text}</button>;
 };
 
 export default Button;

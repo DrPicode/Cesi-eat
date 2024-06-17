@@ -38,7 +38,7 @@ const RestaurantPage = () => {
         break;
     }
   };
-  //console.log(ArticleType);
+
   return (
   <>
     {restaurant && restaurant.articles ? (

@@ -2,7 +2,6 @@ import express  from 'express';
 import http from 'http';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-//import { PrismaClient } from '@prisma/client';
 import {prisma} from "./database/client";
 
 
@@ -12,10 +11,11 @@ import cors from "cors";
 import authRoutes from './routes/AuthRoutes';
 import userRoutes from './routes/UserRoutes';
 import restaurantRoutes from './routes/RestaurantRoutes';
-//import orderRoutes from './routes/OrderRoutes';
+import orderRoutes from './routes/OrderRoutes';
 import addressRoutes from './routes/AddressesRoutes';
 import contentRoutes from "./routes/ContentRoutes";
 import cartRoutes from "./routes/CartRoutes";
+import articleRoutes from "./routes/ArticleRoutes";
 
 dotenv.config();
 
@@ -54,7 +54,8 @@ app.use("/restaurants", restaurantRoutes);
 app.use("/content", contentRoutes)
 app.use("/addresses", addressRoutes);
 app.use("/carts", cartRoutes);
-// app.use('/orders', orderRoutes);
+app.use("/articles", articleRoutes);
+app.use('/orders', orderRoutes);
 
 // 404 error Management
 app.use((req, res) => {

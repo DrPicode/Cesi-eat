@@ -1,128 +1,154 @@
-/*// routes/OrderRoutes.ts
+// routes/OrderRoutes.ts
 import express  from 'express';
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { validateOrder } from '../middlewares/ValidateOrder';
 
 const router = Router();
 const prisma = new PrismaClient();
 
-router.post('/', validateOrder, async (req : express.Request, res : express.Response) => {
-  const {
-    order_date,
-    sandwich,
-    drink,
-    side_food,
-    price,
-    delivery_fees,
-    service_fees,
-    id_user,
-    delivery_hour,
-    delivery_code,
-    is_deleted,
-    id_address,
-    id_order_status,
-    id_restaurant,
-  } = req.body;
+// Créer une nouvelle commande
+router.post('/', async (req, res) => {
+    try {
+        // Récupérer le panier et ses articles
+        const cart = await prisma.cart.findUnique({
+            where: { id_cart: req.body.cartId },
+            include: {
+                articles: {
+                    include: {
+                        article: true,
+                    },
+                },
+            },
+        });
 
-  try {
-    const order = await prisma.orders.create({
-      data: {
-        order_date: new Date(order_date),
-        sandwich,
-        drink,
-        side_food,
-        price,
-        delivery_fees,
-        service_fees,
-        id_user,
-        delivery_hour: new Date(`1970-01-01T${delivery_hour}`),
-        delivery_code,
-        is_deleted,
-        id_address,
-        id_order_status,
-        id_restaurant,
-      },
-    });
-    res.status(201).json(order);
-  } catch (error) {
-    console.error('Error occurred:', error); 
-    res.status(500).json({ error: 'Failed to create order' });
-  }
+        if (!cart) {
+            return res.status(404).json({ error: 'Panier non trouvé' });
+        }
+
+        // Créer la commande
+        const order = await prisma.order.create({
+            data: {
+                is_deleted: false,
+                price: req.body.price,
+                delivery_fees: req.body.deliveryFees,
+                service_fees: req.body.serviceFees,
+                address: {
+                    connect: { id_address: req.body.addressId},
+                },
+                delivery_hour: req.body.deliveryDate,
+                delivery_code: req.body.deliveryCode,
+                cart: {
+                    connect: { id_cart: req.body.cartId },
+                },
+                status: 'Paid',
+            },
+        });
+
+        res.status(201).json(order);
+    } catch (error) {
+        console.error('Error creating order:', error);
+        res.status(500).json({ error: 'Une erreur est survenue lors de la création de la commande' });
+    }
 });
 
-router.put('/:id', validateOrder, async (req: express.Request, res: express.Response) => {
-  const {
-    order_date,
-    sandwich,
-    drink,
-    side_food,
-    price,
-    delivery_fees,
-    service_fees,
-    id_user,
-    delivery_hour,
-    delivery_code,
-    is_deleted,
-    id_address,
-    id_order_status,
-    id_restaurant,
-  } = req.body;
-
-  const { id } = req.params;
-
-  try {
-    const order = await prisma.orders.update({
-      where: { order_id: parseInt(id) },
-      data: {
-        order_date: new Date(order_date),
-        sandwich,
-        drink,
-        side_food,
-        price,
-        delivery_fees,
-        service_fees,
-        id_user,
-        delivery_hour: new Date(`1970-01-01T${delivery_hour}`),
-        delivery_code,
-        is_deleted,
-        id_address,
-        id_order_status,
-        id_restaurant,
-      },
-    });
-    res.status(200).json(order);
-  } catch (error) {
-    console.error('Error occurred:', error);
-    res.status(500).json({ error: 'Failed to update order' });
-  }
+// Obtenir la liste des commandes
+router.get('/', async (req, res) => {
+    try {
+        const orders = await prisma.order.findMany();
+        res.status(200).json(orders);
+    } catch (error) {
+        console.error('Error occurred:', error);
+        res.status(500).json({ error: 'Une erreur est survenue' });
+    }
 });
 
-// route pour delete une commande
-router.delete('/:id', async (req: express.Request, res: express.Response) => {
-  const orderId = parseInt(req.params.id);
+router.get('id/:id', async (req, res) => {
+    try {
+        const order = await prisma.order.findUnique({
+            where: { id_order: parseInt(req.params.id) },
+            include: {
+                address: true,
+                cart: {
+                    include: {
+                        articles: {
+                            include: {
+                                article: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
 
-  try {
-    await prisma.orders.delete({
-      where: { order_id: orderId },
-    });
-    res.status(204).send();
-    console.error('Order n°',orderId);
-  } catch (error) {
-    console.error('Error occurred:', error);
-    res.status(500).json({ error: 'Failed to delete order' });
-  }
+        if (!order) {
+            return res.status(404).json({ error: 'Commande non trouvée' });
+        }
+
+        res.status(200).json(order);
+    } catch (error) {
+        console.error('Error occurred:', error);
+        res.status(500).json({ error: 'Une erreur est survenue' });
+    }
 });
 
-router.get('/', async (req: express.Request, res: express.Response) => {
-  try {
-    const orders = await prisma.orders.findMany();
-    res.status(200).json(orders);
-  } catch (error) {
-    console.error('Error occurred:', error);
-    res.status(500).json({ error: 'Failed to retrieve orders' });
-  }
+router.get('/latest', async (req, res) => {
+    try {
+        const order = await prisma.order.findFirst({
+            orderBy: { id_order: 'desc' },
+            include: {
+                address: true,
+                cart: {
+                    include: {
+                        articles: {
+                            include: {
+                                article: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        if (!order) {
+            return res.status(404).json({ error: 'Commande non trouvée' });
+        }
+
+        res.status(200).json(order);
+    } catch (error) {
+        console.error('Error occurred:', error);
+        res.status(500).json({ error: 'Une erreur est survenue' });
+    }
+});
+
+// get all orders by user
+router.get('/user/:id', async (req, res) => {
+    try {
+        const orders = await prisma.order.findMany({
+            where: {
+                cart: {
+                    user_id_user: parseInt(req.params.id),
+                },
+            },
+            include: {
+                address: true,
+                cart: {
+                    include: {
+                        articles: {
+                            include: {
+                                article: true,
+                            },
+                        },
+                    },
+                },
+            }
+        });
+
+        res.status(200).json(orders);
+    } catch (error) {
+        console.error('Error occurred:', error);
+        res.status(500).json({ error: 'Une erreur est survenue' });
+    }
 });
 
 export default router;
- */
+

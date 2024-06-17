@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { MdPlace } from 'react-icons/md';
 import { AiOutlineCalendar } from 'react-icons/ai';
-import Cart from '../components/Cart';
+import CartCheckOut from "../components/CartCheckOut.jsx";
 
-const CheckOutTemp = () => {
+const CheckOut = () => {
   const [active, setActive] = useState(null);
   const [activeNow, setActiveNow] = useState(true);
   const [currentDateTime, setCurrentDateTime] = useState('');
@@ -11,6 +11,8 @@ const CheckOutTemp = () => {
   const [selectedAddress, setSelectedAddress] = useState('');
   const [showAddressInput, setShowAddressInput] = useState(false);
   const [newAddress, setNewAddress] = useState('');
+  const [newCity, setNewCity] = useState('');
+  const [newZipCode, setNewZipCode] = useState('');
 
   const fetchAddresses = async () => {
     try {
@@ -48,6 +50,13 @@ const CheckOutTemp = () => {
       setCurrentDateTime(formattedDateTime);
     }
   };
+
+  const handleDateTimeChange = (event) => {
+    setCurrentDateTime(event.target.value);
+  }
+
+  const now = new Date();
+  const minDateTime = now.toISOString().slice(0, 16);
 
   // Fonction pour gérer le changement de l'adresse sélectionnée dans la liste déroulante
   const handleAddressChange = (event) => {
@@ -109,7 +118,6 @@ const CheckOutTemp = () => {
                 ))}
               </select>
 
-              {/* Ajoutez le bouton "Ajouter une adresse" sous la liste déroulante */}
               <button onClick={handleOpenAddressInput} className={'bg-secColor text-white py-2 px-4 rounded-lg'}>
                 Ajouter une adresse
               </button>
@@ -165,13 +173,17 @@ const CheckOutTemp = () => {
                     type="datetime-local"
                     className="w-full h-10 border border-gray-300 rounded-lg p-2"
                     value={currentDateTime}
-                    onChange={(e) => setCurrentDateTime(e.target.value)}
+                    onChange={handleDateTimeChange}
+                    min={minDateTime}
                 />
               </div>
             </div>
           </div>
           {/* <Cart /> */}
-          <Cart/>
+          <CartCheckOut
+              selectedAddress={selectedAddress}
+              currentDateTime={currentDateTime}
+          />
         </div>
 
         {/* Popup pour ajouter une nouvelle adresse */}
@@ -184,6 +196,20 @@ const CheckOutTemp = () => {
                     value={newAddress}
                     onChange={(e) => setNewAddress(e.target.value)}
                     placeholder="Entrez votre nouvelle adresse"
+                    className="w-full border border-gray-300 rounded-lg p-2 mb-4"
+                />
+                <input
+                    type="text"
+                    value={newCity}
+                    onChange={(e) => setNewCity(e.target.value)}
+                    placeholder="Entrez votre ville"
+                    className="w-full border border-gray-300 rounded-lg p-2 mb-4"
+                />
+                <input
+                    type="text"
+                    value={newZipCode}
+                    onChange={(e) => setNewZipCode(e.target.value)}
+                    placeholder="Entrez votre code postal"
                     className="w-full border border-gray-300 rounded-lg p-2 mb-4"
                 />
                 <div className="flex justify-end">
@@ -207,4 +233,4 @@ const CheckOutTemp = () => {
   );
 };
 
-export default CheckOutTemp;
+export default CheckOut;
