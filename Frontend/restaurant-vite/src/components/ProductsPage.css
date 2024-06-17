@@ -1,0 +1,147 @@
+.main-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: Poppins, sans-serif;
+}
+
+header {
+    text-align: center;
+    padding: 10px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header h3 {
+    margin: 5px 0;
+}
+
+.products-page {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.products-page h2 {
+    margin-bottom: 20px;
+}
+
+.product-type-select {
+    padding: 10px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    max-width: 300px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    outline: none;
+}
+
+.products-list {
+    width: 100%;
+    max-width: 500px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    padding: 10px;
+    max-height: 60vh;
+}
+
+.product-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.product-item:last-child {
+    border-bottom: none;
+}
+
+.product-info h3,
+.product-info p {
+    margin: 0;
+}
+
+.product-actions {
+    display: flex;
+    align-items: center;
+}
+
+.product-actions span {
+    margin-right: 10px;
+}
+
+button.secondary {
+    background-color: white;
+    color: black;
+    padding: 5px 10px;
+    border: solid 2px #FC8019;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+button.tertiary {
+    background-color: #202020;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button.secondary:hover {
+    background-color: lightgray;
+    border-color: lightgray;
+}
+
+button.tertiary:hover {
+    background-color: #FC8019;
+}
+
+button.primary {
+    background-color: #FC8019;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+button.primary:hover {
+    background-color: rgb(205, 113, 0);
+}
+
+footer {
+    background-color: #FC8019;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+footer nav {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+}

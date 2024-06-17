@@ -7,7 +7,14 @@ import {useNavigate, useParams} from 'react-router-dom';
 const Profile = () => {
     const {id} = useParams();
     const navigate = useNavigate();
-    const [user, setUser] = useState(null)
+    const [user, setUser] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const [updatedUser, setUpdatedUser] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+    });
 
     useEffect(() => {
         console.log("Fetch user with id ")
@@ -31,7 +38,7 @@ const Profile = () => {
             }
         }
         fecthUserData();
-    }, [id])
+    }, [id]);
 
     const disconnect = () => {
         try {
@@ -52,7 +59,7 @@ const Profile = () => {
         } catch (e) {
             console.error(e)
         }
-    }
+    };
 
     const deleteAccount = () => {
         try {
@@ -73,7 +80,39 @@ const Profile = () => {
         } catch (e) {
             console.error(e)
         }
-    }
+    };
+
+    const handleUpdateUser = async () => {
+        try {
+            const updatedUserData = {
+                firstName: updatedUser.firstName === '' ? user.firstName : updatedUser.firstName,
+                lastName: updatedUser.lastName === '' ? user.lastName : updatedUser.lastName,
+                email: updatedUser.email === '' ? user.email : updatedUser.email,
+                phone: updatedUser.phone === '' ? user.phone : updatedUser.phone,
+            };
+
+            const response = await fetch(`/api/users/${id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${authProxy.token}`,
+                },
+                body: JSON.stringify(updatedUserData),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setUser(data);
+                setShowModal(false);
+                console.log("User updated", data);
+            } else {
+                alert("Erreur lors de la mise à jour des informations");
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
 
     return (
         <div className="w-full h-full section__padding ">
@@ -100,8 +139,14 @@ const Profile = () => {
                                         Mot de passe : ********
                                     </p>
                                     <div className="flex gap-4 mt-4">
-                                        <button className="bg-secColor text-white py-2 px-4 rounded">Modifier</button>
-                                        <button className="bg-red-500 text-white py-2 px-4 rounded" onClick={deleteAccount}>Supprimer le
+                                        <button
+                                            className="bg-secColor text-white py-2 px-4 rounded"
+                                            onClick={() => setShowModal(true)}
+                                        >
+                                            Modifier
+                                        </button>
+                                        <button className="bg-red-500 text-white py-2 px-4 rounded"
+                                                onClick={deleteAccount}>Supprimer le
                                             compte
                                         </button>
                                         <button className="bg-mainColor text-white py-2 px-4 rounded"
@@ -115,9 +160,59 @@ const Profile = () => {
                         </div>
                     </div>
                 </div>
-                {/* <Cart /> */}
-                <HistoryCard/>
+                <div className="w-1/2">
+                    <HistoryCard userId={id}/>
+                </div>
             </div>
+            {showModal && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-6 rounded-lg">
+                        <h3 className="text-lg font-semibold mb-4">Modifier les informations</h3>
+                        <input
+                            type="text"
+                            value={updatedUser.firstName}
+                            onChange={(e) => setUpdatedUser({ ...updatedUser, firstName: e.target.value })}
+                            placeholder={user.firstName}
+                            className="w-full border border-gray-300 rounded-lg p-2 mb-4"
+                        />
+                        <input
+                            type="text"
+                            value={updatedUser.lastName}
+                            onChange={(e) => setUpdatedUser({ ...updatedUser, lastName: e.target.value })}
+                            placeholder={user.lastName}
+                            className="w-full border border-gray-300 rounded-lg p-2 mb-4"
+                        />
+                        <input
+                            type="email"
+                            value={updatedUser.email}
+                            onChange={(e) => setUpdatedUser({ ...updatedUser, email: e.target.value })}
+                            placeholder={user.email}
+                            className="w-full border border-gray-300 rounded-lg p-2 mb-4"
+                        />
+                        <input
+                            type="tel"
+                            value={updatedUser.phone}
+                            onChange={(e) => setUpdatedUser({ ...updatedUser, phone: e.target.value })}
+                            placeholder={user.phone}
+                            className="w-full border border-gray-300 rounded-lg p-2 mb-4"
+                        />
+                        <div className="flex justify-end">
+                            <button
+                                className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg mr-2"
+                                onClick={() => setShowModal(false)}
+                            >
+                                Annuler
+                            </button>
+                            <button
+                                className="bg-secColor text-white py-2 px-4 rounded-lg"
+                                onClick={handleUpdateUser}
+                            >
+                                Enregistrer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

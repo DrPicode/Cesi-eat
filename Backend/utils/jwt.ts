@@ -22,7 +22,11 @@ export const validateToken = (req: Request) => {
     }
 
     // Validate token
-    return jwt.verify(token, process.env.JWT_SECRET, {}, (err, _) => {
-        return !err;
+    return jwt.verify(token, process.env.JWT_SECRET, {}, (err, payload) => {
+        if (err) {
+            return false
+        }else{
+            return payload
+        }
     })
 }

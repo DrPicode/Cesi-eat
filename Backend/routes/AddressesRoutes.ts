@@ -10,6 +10,17 @@ router.get('/', async (req : express.Request, res : express.Response) => {
     res.status(200).json(addresses);
 });
 
+// create a route to find the id_address with the address
+router.get('/:address', async (req : express.Request, res : express.Response) => {
+    const address = req.params.address;
+    const addressId = await prisma.address.findFirst({
+        where: {
+            address: address,
+        },
+    });
+    res.status(200).json(addressId);
+});
+
 /*router.post('/', async (req : express.Request, res : express.Response) => {
     try {
         const newAddress = await prisma.address.create({
