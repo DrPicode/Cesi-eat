@@ -55,6 +55,7 @@ model Restaurant {
   name          String
   thumbnail     String
   is_deleted    Boolean @default(false)
+  is_open       Boolean @default(false)
 
   type RestaurantType
 

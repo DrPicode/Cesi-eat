@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react'
 import FoodCard from './FoodCard';
-import { personalized } from '../data'
 
 const RestaurantCard = () => {
     const [restaurants, setRestaurants] = useState([]);

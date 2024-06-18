@@ -1,23 +1,21 @@
-import {Router, Request, Response} from 'express';
+import { Router, Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { JwtUserPayload } from '../models/Token';
-import {prisma} from "../database/client";
-import {generateAccessToken, generateRefreshToken} from "../utils/jwt";
-import {UserType} from "@prisma/client";
+import { prisma } from "../database/client";
+import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
+import { UserType } from "@prisma/client";
 
 const router = Router();
 
 // New user creation
 router.post('/register', async (req: Request, res: Response) => {
-    const {lastName, firstName, email, phone, password, status, address, city, postalCode} = req.body;
+    const { lastName, firstName, email, phone, password, status, address, city, postalCode } = req.body;
 
     // Check if all fields are provided
     if (!lastName || !firstName || !email || !phone || !password || !status || !address || !city || !postalCode) {
         return res.status(400).send('Tous les champs sont requis');
     }
-
-    console.log("User:", {lastName, firstName, email, phone, password, status, address, city, postalCode})
 
     // Check if user already exists
     const user = await prisma.user.findUnique({
@@ -64,7 +62,7 @@ router.post('/register', async (req: Request, res: Response) => {
                 }
             }
         });
-        console.log({user});
+        console.log({ user });
         delete user.password;
         return res.status(201).json(user);
     } catch (error) {
@@ -91,10 +89,10 @@ router.post('/login', async (req: Request, res: Response) => {
         if (await bcrypt.compare(req.body.password, user.password)) {
             const accessToken = generateAccessToken({ userId: user.id_user.toString(), lastName: user.lastName });
             const refreshToken = generateRefreshToken(user.id_user.toString());
-            console.log({refreshToken, accessToken});
+            console.log({ refreshToken, accessToken });
             res.cookie("refresh", refreshToken, {
                 httpOnly: true,
-                maxAge: 7 * 60 * 24 * 30, // 7 jours,
+                maxAge: 7 * 60 * 24 * 30 * 1000,
                 path: "/",
             })
 
@@ -114,9 +112,9 @@ router.post('/login', async (req: Request, res: Response) => {
 // Route pour rafraîchir le access token
 router.get('/token', async (req: Request, res: Response) => {
     const rawCookies = req.headers.cookie;
-    console.log({rawCookies});
+    console.log({ rawCookies });
     const token = rawCookies?.split(';').find((c: string) => c?.trim()?.startsWith('refresh='))?.split('=')[1];
-    console.log({token});
+    console.log({ token });
     if (!token) {
         return res.status(401).send('Refresh token non fourni');
     }
@@ -129,7 +127,7 @@ router.get('/token', async (req: Request, res: Response) => {
 
             const user = decoded as JwtUserPayload;
             const newAccessToken = generateAccessToken(user);
-            res.status(200).json({ accessToken: newAccessToken });
+            res.status(200).json({ accessToken: newAccessToken, userId: user.userId });
         });
     } catch (error) {
         console.error(error);

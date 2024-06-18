@@ -9,7 +9,7 @@ const RestaurantPage = () => {
   const [selectedSideFood, setSelectedSideFood] = useState(null);
   const [selectedDrink, setSelectedDrink] = useState(null);
 
-    const [restaurant, setRestaurant] = useState([]);
+  const [restaurant, setRestaurant] = useState([]);
 
   const {id} = useParams();
     useEffect(() => {
@@ -184,6 +184,7 @@ const RestaurantPage = () => {
                   selectedSideFood={selectedSideFood}
                   selectedDrink={selectedDrink}
                   articles={restaurant.articles}
+                  restaurant={restaurant}
               />
             </div>
           </div>

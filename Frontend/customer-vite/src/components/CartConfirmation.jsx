@@ -4,7 +4,7 @@ import Button from './Button';
 import {round} from "lodash";
 import {authProxy} from "../proxy/auth.proxy.js";
 
-const CartConfirmation = ({cart, deliveryFees, serviceFees}) => {
+const CartConfirmation = ({cart, id_order, deliveryFees, serviceFees}) => {
     const articles = cart.articles;
     const total = articles.reduce((acc, article) => acc + article.article.price * article.quantity, 0);
 
@@ -12,7 +12,7 @@ const CartConfirmation = ({cart, deliveryFees, serviceFees}) => {
       <div className=" border p-2 rounded-lg md:border-none w-full font-medium" style={{maxWidth: "550px"}}>
           <div className="flex justify-between px-10 items-center mb-5">
               <h5 className=" text-2xl">
-                  Votre commande N°{cart.id_order}
+                  Votre commande N°{id_order + 1}
               </h5>
           </div>
           <div className="flex flex-col px-10 gap-5 mb-5">
@@ -50,7 +50,8 @@ const CartConfirmation = ({cart, deliveryFees, serviceFees}) => {
           <div className="h-5"></div>
           <Button
               class={'bg-secColor w-full py-3 mt-2 text-white text-xl transition-all ease-in-out hover:bg-mainColor'}
-              text={'Retour Accueil'}
+              text={'Retour à l\'accueil'}
+              onClick={navigate('/')}
           />
       </div>
   );

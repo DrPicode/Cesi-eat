@@ -4,7 +4,7 @@ import Button from './Button';
 import {round} from "lodash";
 import {authProxy} from "../proxy/auth.proxy.js";
 
-const Cart = ({ selectedSandwich, selectedSideFood, selectedDrink, articles }) => {
+const Cart = ({ selectedSandwich, selectedSideFood, selectedDrink, articles, restaurant }) => {
     const navigate = useNavigate();
   const total = selectedSandwich && selectedSideFood && selectedDrink ? round(articles.find(item => item.id_article === selectedSandwich).price + articles.find(item => item.id_article === selectedSideFood).price + articles.find(item => item.id_article === selectedDrink).price,2) : 0;
 
@@ -41,7 +41,7 @@ const Cart = ({ selectedSandwich, selectedSideFood, selectedDrink, articles }) =
       </div>
       <div className="flex flex-col px-10 gap-5 mb-5">
         <p>
-          De <span className=" text-secColor">Mc Donald's Saint Médard en Jalles</span>
+          De <span className=" text-secColor">{`${restaurant.name} ${restaurant?.address?.city || ""}`}</span>
         </p>
         <div className="flex justify-between items-center">
           <div>

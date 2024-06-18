@@ -3,20 +3,36 @@ import { MdPlace } from 'react-icons/md';
 import CartConfirmation from "../components/CartConfirmation.jsx";
 
 const Confirmation = () => {
+    const [order, setOrder] = useState(null);
+    const [isLoading, setIsLoading] = useState(true); // Ajout d'un état de chargement
 
-  const [order, setOrder] = useState(null);
+    useEffect(() => {
+        setIsLoading(true); // Définir l'état de chargement à true avant de faire la requête
 
-  useEffect(() => {
-    fetch('api/orders/latest')
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Erreur de requête');
-          }
-          return response.json();
-        })
-        .then(data => setOrder(data))
-        .catch(error => console.error('Erreur :', error));
-  }, []);
+        fetch('api/orders/latest')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur de requête');
+                }
+                return response.json();
+            })
+            .then(data => {
+                setOrder(data);
+                setIsLoading(false);
+            })
+            .catch(error => {
+                console.error('Erreur :', error);
+                setIsLoading(false);
+            });
+    }, []);
+
+    if (isLoading) {
+        return <div>Chargement...</div>;
+    }
+
+    if (!order) {
+        return <div>Erreur lors du chargement des données</div>;
+    }
 
   return (
       <div className="w-full h-full section__padding ">
@@ -97,6 +113,7 @@ const Confirmation = () => {
               {order && (
                   <CartConfirmation
                       cart={order.cart}
+                      id_order={order.id_order}
                       deliveryFees={order.delivery_fees}
                       serviceFees={order.service_fees}
                   />

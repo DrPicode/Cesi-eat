@@ -1,39 +1,69 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
+import {authProxyDelivery} from "../proxy/auth.proxy.js";
+import {useSnapshot} from "valtio";
 
 const LoginPage = () => {
     const navigate = useNavigate();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
-    const validateEmail = (email) => {
-        const re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-        return re.test(String(email).toLowerCase());
-    };
+    const authSnap = useSnapshot(authProxyDelivery);
 
-    const handleLogin = async (e) => {
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
+    }
+
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+    }
+
+    const validateForm = () => {
+        if (!email.trim()) {
+            setError("Veuillez entrer une adresse e-mail.");
+            return false;
+        }
+        if (!password.trim()) {
+            setError("Veuillez entrer un mot de passe.");
+            return false;
+        }
+        return true;
+    }
+
+    const submit = async (e) => {
         e.preventDefault();
-        setError('');
+        if (validateForm()) {
+            try {
+                const response = await fetch("/api/auth/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password
+                    })
+                });
 
-        if (!validateEmail(email)) {
-            setError('Veuillez entrer une adresse e-mail valide.');
-            return;
+                if (response.ok) {
+                    const body = await response.json();
+                    console.log({body});
+                    authProxyDelivery.token = body.accessToken;
+                    authProxyDelivery.userId = body.userId;
+                    navigate(`/home`);
+                } else {
+                    // Afficher le message d'erreur sur la page
+                    const errorMessage = await response.text();
+                    setError(`Erreur lors de la connexion : ${errorMessage}`);
+                }
+            } catch (error) {
+                console.error(error);
+                setError('Une erreur est survenue lors de la connexion.');
+            }
         }
-
-        if (password.length < 6) {
-            setError('Le mot de passe doit comporter au moins 6 caractères.');
-            return;
-        }
-
-        // Simuler une vérification d'authentification
-        if (email === 'test@cesi.fr' && password === 'password') {
-            navigate('/home');
-        } else {
-            setError('Adresse e-mail ou mot de passe incorrect.');
-        }
-    };
+    }
 
     return (
         <div className="main-container">
@@ -42,19 +72,19 @@ const LoginPage = () => {
                 <h3>Livreur</h3>
             </header>
             <div className="login-page">
-                <form onSubmit={handleLogin}>
+                <form onSubmit={submit}>
                     <input
                         type="email"
                         placeholder="Adresse e-mail"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={handleEmailChange}
                         required
                     />
                     <input
                         type="password"
                         placeholder="Mot de passe"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={handlePasswordChange}
                         required
                     />
                     {error && <p className="error-message">{error}</p>}

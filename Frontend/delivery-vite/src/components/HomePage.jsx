@@ -1,12 +1,30 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './HomePage.css';
+import { authProxyDelivery } from "../proxy/auth.proxy.js";
 
 const HomePage = () => {
     const navigate = useNavigate();
 
-    const handleLogout = () => {
-        navigate('/');
+    const disconnect = () => {
+        try {
+            const headers = new Headers();
+            headers.set("Authorization", `Bearer ${authProxyDelivery.token}`)
+            fetch(`/api/auth/logout`, {
+                method: "GET",
+                headers
+            }).then(async (response) => {
+                if (response.ok){
+                    authProxyDelivery.token = null;
+                    navigate("/")
+                } else {
+                    alert("Not Authorized");
+                    navigate("/login")
+                }
+            });
+        } catch (e) {
+            console.error(e)
+        }
     };
 
     return (
@@ -21,7 +39,7 @@ const HomePage = () => {
                     <button className="secondary" onClick={() => navigate('/delivery')}>Livrer une commande</button>
                     <button className="secondary" onClick={() => navigate('/history')}>Mes livraisons</button>
                     <button className="secondary" onClick={() => navigate('/profile')}>Mon profil</button>
-                    <button className="tertiary" onClick={handleLogout}>Se déconnecter</button>
+                    <button className="tertiary" onClick={disconnect}>Se déconnecter</button>
                 </div>
             </div>
             <footer>

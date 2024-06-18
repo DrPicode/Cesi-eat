@@ -21,6 +21,8 @@ const Register = () => {
     const [errors, setErrors] = useState({});
     const [isChecked, setIsChecked] = useState(false);
     const navigate = useNavigate(); // Utiliser useNavigate pour rediriger l'utilisateur
+    const [restaurantName, setRestaurantName] = useState("");
+    const [restaurantType, setRestaurantType] = useState("");
 
     const handleLastNameChange = (e) => {
         setLastName(e.target.value);
@@ -120,6 +122,17 @@ const Register = () => {
             isValid = false;
         }
 
+        if (status === "restaurateur") {
+            if (!restaurantName.trim()) {
+                errors.restaurantName = "Le nom du restaurant est obligatoire";
+                isValid = false;
+            }
+            if (!restaurantType.trim()) {
+                errors.restaurantType = "Le type du restaurant est obligatoire";
+                isValid = false;
+            }
+        }
+
         setErrors(errors);
         return isValid;
     };
@@ -127,10 +140,10 @@ const Register = () => {
     const submit = async () => {
         if (validateForm()) {
             try {
-                const response = await fetch("/api/auth/register", {
+                const registerResponse = await fetch("/api/auth/register", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
                         lastName,
@@ -139,48 +152,76 @@ const Register = () => {
                         phone,
                         password,
                         status,
-                        address, // Ajouter le champ adresse
-                        city, // Ajouter le champ ville
-                        postalCode // Ajouter le champ code postal
-                    })
+                        address,
+                        city,
+                        postalCode,
+                    }),
                 });
 
-                if (response.ok) {
+                if (registerResponse.ok) {
                     try {
-                        const response = await fetch("/api/auth/login", {
+                        const loginResponse = await fetch("/api/auth/login", {
                             method: "POST",
                             headers: {
-                                "Content-Type": "application/json"
+                                "Content-Type": "application/json",
                             },
-                            body: JSON.stringify({
-                                email,
-                                password
-                            })
+                            body: JSON.stringify({ email, password }),
                         });
 
-                        if (response.ok) {
-                            const body = await response.json();
-                            console.log({body});
+                        if (loginResponse.ok) {
+                            const body = await loginResponse.json();
+                            console.log({ body });
                             authProxy.token = body.accessToken;
-                            navigate('/');
+                            if (status === "restaurateur") {
+                                const restaurantResult = await fetch("/api/restaurants", {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                    },
+                                    body: JSON.stringify({
+                                        name: restaurantName,
+                                        type: restaurantType,
+                                        user_id_user: body.userId,
+                                    }),
+                                });
+                                if (restaurantResult.ok) {
+                                    const restaurantBody = await restaurantResult.json();
+                                    const registerBody = await registerResponse.json();
+                                    await fetch("/api/addresses/linkToRestaurant", {
+                                        method: "PATCH",
+                                        headers: {
+                                            "Content-Type": "application/json",
+                                        },
+                                        body: JSON.stringify({
+                                            id_restaurant: restaurantBody.id_restaurant,
+                                            id_address: registerBody.address_id_address,
+                                        }),
+                                    });
+                                }
+                                else {
+                                    const errorMessage = await restaurantResult.text();
+                                    setError(`Erreur lors de la création du restaurant : ${errorMessage}`);
+                                }
+                            }
+                            navigate("/");
                         } else {
-                            const errorMessage = await response.text();
+                            const errorMessage = await loginResponse.text();
                             setError(`Erreur lors de la connexion : ${errorMessage}`);
                         }
                     } catch (error) {
                         console.error(error);
-                        setError('Une erreur est survenue lors de la connexion.');
+                        setError("Une erreur est survenue lors de la connexion.");
                     }
                 } else {
-                    const errorMessage = await response.text();
+                    const errorMessage = await registerResponse.text();
                     alert(`Erreur lors de la création du compte : ${errorMessage}`);
                 }
             } catch (error) {
                 console.error(error);
-                alert('Une erreur est survenue lors de la création du compte.');
+                alert("Une erreur est survenue lors de la création du compte.");
             }
         }
-    }
+    };
 
     return (
         <div className="flex flex-col items-center justify-center bg-white w-full h-full">
@@ -304,6 +345,36 @@ const Register = () => {
                     </select>
                 </div>
                 {errors.status && <p className="text-red-500 mb-4">{errors.status}</p>}
+                <div className="relative w-full mb-4">
+                    {status === "restaurateur" && (
+                        <>
+                            <div>
+                                <input className={`w-full p-3 mb-4 border ${errors.restaurantName ? "border-red-500" : "border-gray-300"} rounded-lg text-gray-400 bg-white`} placeholder="Nom du restaurant"
+                                    id="restaurantName"
+                                    type="text"
+                                    value={restaurantName}
+                                    onChange={(e) => setRestaurantName(e.target.value)}
+                                />
+                                {errors.restaurantName && <span>{errors.restaurantName}</span>}
+                            </div>
+                            <div>
+                                <select className={`w-full p-3 mb-4 border ${errors.restaurantType ? "border-red-500" : "border-gray-300"} rounded-lg text-gray-400 bg-white`} id="restaurantType" value={restaurantType} onChange={(e) => setRestaurantType(e.target.value)}>
+                                    id="restaurantType"
+                                    value={restaurantType}
+                                    onChange={(e) => setRestaurantType(e.target.value)}
+
+                                    <option value="">Sélectionnez un type</option>
+                                    <option value="FastFood">FastFood</option>
+                                    <option value="FoodTruck">FoodTruck</option>
+                                    <option value="Asian">Asian</option>
+                                    <option value="Poke">Poke</option>
+                                    <option value="Salad">Salad</option>
+                                </select>
+                                {errors.restaurantType && <span>{errors.restaurantType}</span>}
+                            </div>
+                        </>
+                    )}
+                </div>
                 <div className="flex items-start mb-4">
                     <input
                         type="checkbox"

@@ -21,6 +21,26 @@ router.get('/:address', async (req : express.Request, res : express.Response) =>
     res.status(200).json(addressId);
 });
 
+//create a route to find the last address created
+router.patch('/linkToRestaurant', async (req : express.Request, res : express.Response) => {
+    const linkRestaurant = await prisma.address.update({
+        where: {
+            id_address: req.body.id_address,
+        },
+        data: {
+            restaurant: {
+                connect: {
+                    id_restaurant: req.body.id_restaurant,
+                },
+            },
+        },
+    });
+    res.status(200).json(linkRestaurant);
+});
+
+
+
+
 /*router.post('/', async (req : express.Request, res : express.Response) => {
     try {
         const newAddress = await prisma.address.create({
