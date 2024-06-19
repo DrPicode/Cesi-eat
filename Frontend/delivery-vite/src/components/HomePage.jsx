@@ -1,12 +1,30 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './HomePage.css';
+import { authProxy } from "../proxy/auth.proxy.js";
 
 const HomePage = () => {
     const navigate = useNavigate();
 
-    const handleLogout = () => {
-        navigate('/');
+    const disconnect = () => {
+        try {
+            const headers = new Headers();
+            headers.set("Authorization", `Bearer ${authProxy.token}`)
+            fetch(`/api/auth/logout`, {
+                method: "GET",
+                headers
+            }).then(async (response) => {
+                if (response.ok){
+                    authProxy.token = null;
+                    navigate("/")
+                } else {
+                    alert("Not Authorized");
+                    navigate("/login")
+                }
+            });
+        } catch (e) {
+            console.error(e)
+        }
     };
 
     return (
@@ -16,12 +34,12 @@ const HomePage = () => {
                 <h3>Livreur</h3>
             </header>
             <div className="home-page">
-                <h2>Bienvenue John Doe !</h2>
+                <h2>Bienvenue!</h2>
                 <div className="menu-buttons">
                     <button className="secondary" onClick={() => navigate('/delivery')}>Livrer une commande</button>
                     <button className="secondary" onClick={() => navigate('/history')}>Mes livraisons</button>
                     <button className="secondary" onClick={() => navigate('/profile')}>Mon profil</button>
-                    <button className="tertiary" onClick={handleLogout}>Se déconnecter</button>
+                    <button className="tertiary" onClick={disconnect}>Se déconnecter</button>
                 </div>
             </div>
             <footer>

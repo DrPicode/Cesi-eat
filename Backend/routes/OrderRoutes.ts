@@ -150,5 +150,25 @@ router.get('/user/:id', async (req, res) => {
     }
 });
 
+router.get('/done', async (req, res) => {
+    try {
+        const orders = await prisma.order.findMany({
+            where: {
+                status: {
+                    equals: "Done",
+                },
+            },
+            include: {
+                address: true,
+            }
+        });
+
+        res.status(200).json(orders);
+    } catch (error) {
+        console.error('Error occurred:', error);
+        res.status(500).json({ error: 'Une erreur est survenue' });
+    }
+});
+
 export default router;
 

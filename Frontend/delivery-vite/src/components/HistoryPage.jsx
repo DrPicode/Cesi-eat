@@ -1,19 +1,54 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import { authProxy } from "../proxy/auth.proxy.js";
 import './HistoryPage.css';
 
 function HistoryPage() {
+
+    const id = authProxy.userId;
     const navigate = useNavigate();
+    const [DeliveryTime, setDeliveryTime] = useState(null);
+    const [DeliveryFees, setDeliveryFees] = useState(null);
+    const [DeliveryCode, setDeliveryCode] = useState(null);
+
+
+    useEffect(() => {
+        if (!id) {
+            console.error("User ID is undefined");
+            return;
+        }
+        console.log("Fetch user with id ")
+        const fetchUserData = async () => {
+            try {
+                const headers = new Headers();
+                headers.set("Authorization", `Bearer ${authProxy.token}`)
+                const response = await fetch(`/api/orders/user/${id}`, {headers}).then(async (response) => {
+                    if (response.ok){
+                        const data = await response.json()
+                        setDeliveryTime(data.delivery_hour)
+                        setDeliveryFees(data.delivery_fees)
+                        setDeliveryCode(data.delivery_code)
+                    } else {
+                        console.log(response)
+                        alert("Not Authorized");
+                        navigate("/login")
+                    }
+                });
+            } catch (e) {
+                console.error(e)
+            }
+        }
+        fetchUserData();
+    }, [id]);
 
     return (
         <div className="main-container">
-            {/* Corrected header structure */}
             <header onClick={() => navigate('/home')}>
                 <h1>CESI Eats</h1>
                 <h3>Livreur</h3>
             </header>
             <div className="home-page">
-                <h2>Liver une commande</h2>
+                <h2>Historique</h2>
                 <div className="delivery-container">
                     <div className="header-row">
                         <span className="restaurant-name">McDonald’s Saint Médard</span>
