@@ -3,8 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { BsEye, BsEyeSlash } from 'react-icons/bs';
 import shape1 from '../assets/Union.png';
 import shape2 from '../assets/shape.png';
-import {authProxy} from "../proxy/auth.proxy.js";
-import {useSnapshot} from "valtio";
+import { authProxy } from "../proxy/auth.proxy.js";
+import { useSnapshot } from "valtio";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -51,10 +51,11 @@ const Login = () => {
 
                 if (response.ok) {
                     const body = await response.json();
-                    console.log({body});
+                    console.log({ body });
                     authProxy.token = body.accessToken;
                     authProxy.userId = body.userId;
-                    navigate(`/`);
+                    sessionStorage.setItem("User", JSON.stringify(body));
+                    navigate("/");
                 } else {
                     // Afficher le message d'erreur sur la page
                     const errorMessage = await response.text();
@@ -62,7 +63,7 @@ const Login = () => {
                 }
             } catch (error) {
                 console.error(error);
-                setError('Une erreur est survenue lors de la connexion.');
+                setError(`Une erreur est survenue lors de la connexion: ${error.message}`);
             }
         }
     }

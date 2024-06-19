@@ -4,10 +4,10 @@ import LoginPage from './components/LoginPage.jsx';
 import HomePage from './components/HomePage.jsx';
 import ProductsPage from './components/ProductsPage.jsx';
 import OrdersPage from './components/OrdersPage.jsx';
+import Unauthorized from "./components/Unauthorized.jsx";
 import AddProductPage from './components/AddProductPage.jsx';
-import UpdateProductPage from './components/UpdateProductPage.jsx';
 import RestaurantInfoPage from './components/RestaurantInfoPage.jsx';
-import { authProxyRestaurant } from "./proxy/auth.proxy.js";
+import {authProxyRestaurant} from "./proxy/auth.proxy.js";
 import { useSnapshot } from "valtio";
 
 function App() {
@@ -45,6 +45,7 @@ function App() {
     return loading ? <p>Loading...</p> : (
         <Routes>
             <Route path="/" element={<LoginPage />} />
+            <Route path="/unauthorized" element={<Unauthorized />} />
             <Route path="*" element={
                 (() => {
                     if (currentUser) {
@@ -55,7 +56,6 @@ function App() {
                                 <Route path="/orders" element={<OrdersPage />} />
                                 <Route path="*" element={<h1>404 - Page not found</h1>} />
                                 <Route path="/add-product" element={<AddProductPage />} />
-                                <Route path="/update-product/:productId" element={<UpdateProductPage />} />
                                 <Route path="/restaurant-info" element={<RestaurantInfoPage />} />
                             </Routes>
                         )

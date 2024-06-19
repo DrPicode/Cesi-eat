@@ -14,12 +14,13 @@ const HomePage = () => {
                 method: "GET",
                 headers
             }).then(async (response) => {
-                if (response.ok){
+                if (response.ok) {
                     authProxyDelivery.token = null;
+                    sessionStorage.removeItem("User");
                     navigate("/")
                 } else {
                     alert("Not Authorized");
-                    navigate("/login")
+                    navigate("/")
                 }
             });
         } catch (e) {
@@ -37,7 +38,6 @@ const HomePage = () => {
                 <h2>Bienvenue John Doe !</h2>
                 <div className="menu-buttons">
                     <button className="secondary" onClick={() => navigate('/delivery')}>Livrer une commande</button>
-                    <button className="secondary" onClick={() => navigate('/history')}>Mes livraisons</button>
                     <button className="secondary" onClick={() => navigate('/profile')}>Mon profil</button>
                     <button className="tertiary" onClick={disconnect}>Se déconnecter</button>
                 </div>

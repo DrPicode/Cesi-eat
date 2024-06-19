@@ -3,10 +3,12 @@ import { Link, useLocation } from 'react-router-dom';
 import Button from './Button';
 import {round} from "lodash";
 import {authProxy} from "../proxy/auth.proxy.js";
+import {useNavigate} from "react-router-dom";
 
 const CartConfirmation = ({cart, id_order, deliveryFees, serviceFees}) => {
     const articles = cart.articles;
     const total = articles.reduce((acc, article) => acc + article.article.price * article.quantity, 0);
+    const navigate = useNavigate();
 
   return (
       <div className=" border p-2 rounded-lg md:border-none w-full font-medium" style={{maxWidth: "550px"}}>
@@ -48,11 +50,6 @@ const CartConfirmation = ({cart, id_order, deliveryFees, serviceFees}) => {
               <p>{total + deliveryFees + serviceFees} €</p>
           </div>
           <div className="h-5"></div>
-          <Button
-              class={'bg-secColor w-full py-3 mt-2 text-white text-xl transition-all ease-in-out hover:bg-mainColor'}
-              text={'Retour à l\'accueil'}
-              onClick={navigate('/')}
-          />
       </div>
   );
 };

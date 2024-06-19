@@ -138,6 +138,7 @@ model CartArticle {
 enum OrderStatus {
   Paid
   Preparing
+  Done
   Delivering
   Delivered
   Cancelled

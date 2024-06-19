@@ -42,6 +42,7 @@ const HomePage = () => {
             }).then(async (response) => {
                 if (response.ok) {
                     authProxyRestaurant.token = null;
+                    sessionStorage.removeItem("User");
                     navigate("/")
                 } else {
                     alert("Not Authorized");
@@ -53,18 +54,110 @@ const HomePage = () => {
         }
     };
 
+    const openRestaurant = () => {
+        try {
+            const headers = new Headers();
+            headers.set("Authorization", `Bearer ${authProxyRestaurant.token}`)
+            fetch(`/api/restaurants/name/${restaurant.name}`, {
+                method: "GET",
+                headers
+            }).then(async (response) => {
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(data);
+                    try {
+                        const headers = new Headers();
+                        headers.set("Authorization", `Bearer ${authProxyRestaurant.token}`)
+                        fetch(`/api/restaurants/${data.id_restaurant}/open`, {
+                            method: "POST",
+                            headers
+                        }).then(async (response) => {
+                            if (response.ok) {
+                                setRestaurant({ ...restaurant, isOpen: true });
+                            } else {
+                                alert("Not Authorized");
+                                navigate("/")
+                            }
+                        });
+                    } catch (e) {
+                        console.error(e)
+                    }
+                } else {
+                    alert("Not Authorized");
+                    navigate("/")
+                }
+            });
+        } catch (e) {
+            console.error(e)
+        }
+    };
+
+    const closeRestaurant = () => {
+        try {
+            const headers = new Headers();
+            headers.set("Authorization", `Bearer ${authProxyRestaurant.token}`)
+            fetch(`/api/restaurants/name/${restaurant.name}`, {
+                method: "GET",
+                headers
+            }).then(async (response) => {
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(data);
+                    try {
+                        const headers = new Headers();
+                        headers.set("Authorization", `Bearer ${authProxyRestaurant.token}`)
+                        fetch(`/api/restaurants/${data.id_restaurant}/close`, {
+                            method: "POST",
+                            headers
+                        }).then(async (response) => {
+                            if (response.ok) {
+                                setRestaurant({ ...restaurant, isOpen: false });
+                            } else {
+                                alert("Not Authorized");
+                                navigate("/")
+                            }
+                        });
+                    } catch (e) {
+                        console.error(e)
+                    }
+                } else {
+                    alert("Not Authorized");
+                    navigate("/")
+                }
+            });
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    const handleHomeClick = () => {
+        navigate('/home');
+    }
+
     return (
         <div className="main-container">
-            <header>
-                <h1>CESI Eats</h1>
-                <h3>Restaurateur</h3>
+            <header className="header">
+                <div className="header-left" onClick={handleHomeClick}>
+                    <h1>CESI Eats</h1>
+                    <h3>Restaurateur</h3>
+                </div>
             </header>
             <div className="home-page">
                 {loading ? <p>Loading...</p> : <>
                     <h2>{restaurant.name}</h2>
                     <div className="status-buttons">
-                        <button className="primary">Ouvert</button>
-                        <button className="secondary">Fermé</button>
+                        <button
+                            className={restaurant.isOpen ? "primary" : "secondary"}
+                            onClick={openRestaurant}
+                        >
+                            Ouvert
+                        </button>
+                        <button
+                            className={!restaurant.isOpen ? "primary" : "secondary"}
+                            onClick={closeRestaurant}
+                        >
+                            Fermé
+                        </button>
                     </div>
                     <div className="menu-buttons">
                         <button className="secondary" onClick={() => navigate('/orders')}>Commandes</button>

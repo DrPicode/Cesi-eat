@@ -50,6 +50,7 @@ const Profile = () => {
             }).then(async (response) => {
                 if (response.ok){
                     authProxy.token = null;
+                    sessionStorage.removeItem("User");
                     navigate("/")
                 } else {
                     alert("Not Authorized");
@@ -71,6 +72,7 @@ const Profile = () => {
             }).then(async (response) => {
                 if (response.ok){
                     authProxy.token = null;
+                    sessionStorage.removeItem("User");
                     navigate("/")
                 } else {
                     alert("Not Authorized");

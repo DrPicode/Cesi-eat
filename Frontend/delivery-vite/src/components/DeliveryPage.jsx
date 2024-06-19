@@ -1,36 +1,95 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './DeliveryPage.css';
+import moment from 'moment';
 
 const DeliveryPage = () => {
     const navigate = useNavigate();
 
-    // Liste des livraisons disponibles
-    const deliveries = [
-        {
-            id: 123456789,
-            destination: "CESI, 264 Boulevard Godard 33300, Bordeaux",
-            earnings: "2,00 €",
-            price: "8,90 €"
-        },
-        {
-            id: 123456790,
-            destination: "CESI, 264 Boulevard Godard 33300, Bordeaux",
-            earnings: "2,00 €",
-            price: "8,90 €"
-        },
-        {
-            id: 123456791,
-            destination: "CESI, 264 Boulevard Godard 33300, Bordeaux",
-            earnings: "2,00 €",
-            price: "8,90 €"
-        }
-    ];
+    // // Liste des livraisons disponibles
+    // const deliveries = [
+    //     {
+    //         id: 123456789,
+    //         destination: "CESI, 264 Boulevard Godard 33300, Bordeaux",
+    //         earnings: "2,00 €",
+    //         price: "8,90 €"
+    //     },
+    //     {
+    //         id: 123456790,
+    //         destination: "CESI, 264 Boulevard Godard 33300, Bordeaux",
+    //         earnings: "2,00 €",
+    //         price: "8,90 €"
+    //     },
+    //     {
+    //         id: 123456791,
+    //         destination: "CESI, 264 Boulevard Godard 33300, Bordeaux",
+    //         earnings: "2,00 €",
+    //         price: "8,90 €"
+    //     }
+    // ];
+    const [deliveries, setDeliveries] = useState([]);
+    const [restaurant, setRestaurant] = useState({});
+    const [loading, setLoading] = useState(true);
 
-    // Simplification de la fonction pour naviguer directement
-    const goToDeliveryPage = () => {
-        navigate('/delivery1');
-    };
+    const getDeliveries = useCallback(() => {
+        fetch('/api/deliveries/deliveries')
+            .then(response => response.json())
+            .then(data => {
+                setDeliveries(data.deliveries);
+                setRestaurant(data.restaurant);
+            }).finally(() => {
+                setLoading(false);
+            });
+    }, []);
+
+    const handleDelivering = useCallback((delivery) => {
+        setLoading(true);
+        fetch('/api/deliveries/deliveries/' + delivery.id_order + '/delivering', {
+            method: 'POST',
+        })
+            .then(response => response.json())
+            .then(data => {
+                getDeliveries();
+            }).catch(() => {
+                alert('Erreur lors du changement de statut')
+                setLoading(false);
+            });
+    }, []);
+    const handleDelivered = useCallback((delivery) => {
+        setLoading(true);
+        fetch('/api/deliveries/deliveries/' + delivery.id_order + '/delivered', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                code: delivery.code
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success == true) {
+                    getDeliveries();
+                } else if (data.message === 'Code is incorrect') {
+                    alert('Code invalide');
+                    setLoading(false);
+                }
+            }).catch((e) => {
+                alert('Erreur lors du changement de statut');
+                setLoading(false);
+            });
+    }, []);
+
+    useEffect(() => getDeliveries(), []);
+
+    useEffect(() => {
+        let timer = setInterval(() => {
+            getDeliveries()
+        }, 2000);
+        return () => {
+            clearInterval(timer);
+        }
+    }, [getDeliveries]);
 
     return (
         <div className="main-container">
@@ -40,23 +99,36 @@ const DeliveryPage = () => {
             </header>
             <div className="home-page">
                 <h2>Livrer une commande</h2>
-                {deliveries.map((delivery, index) => (
-                    <div key={index} className="delivery-container">
+                {loading ? <p>Loading...</p> : deliveries.map((delivery) => (
+                    <div key={delivery.id_order} className="delivery-container">
                         <div className="header-row">
-                            <span className="restaurant-name">McDonald’s Saint Médard</span>
-                            <span className="order-price">{delivery.price}</span>
+                            <span className="restaurant-name">{restaurant.name}</span>
+                            <span className="order-price">{delivery.price} €</span>
                         </div>
                         <div className="delivery-info">
                             <strong>Livrer à:</strong>
-                            <div>{delivery.destination}</div>
-                            <div>Cette course vous rapporte: <strong className='earnings-amount'>{delivery.earnings}</strong></div>
+                            <div>{delivery.address.address}<br />{delivery.address.postalCode} {delivery.address.city}</div>
+                            <div>Cette course vous rapporte: <strong className='earnings-amount'>{delivery.delivery_fees} €</strong></div>
                         </div>
                         <div className="bottom-row">
                             <div className="order-number">
-                                <span>Numéro </span><span><strong>{delivery.id}</strong></span>
+                                <span>Numéro </span><span><strong>{delivery.id_order}</strong></span>
                             </div>
-                            <span className="order-time">19h00</span>
-                            <button className="deliver-btn" onClick={goToDeliveryPage}>Livrer</button>
+                            <span className="order-time">{moment(delivery.delivery_hour).format('DD/MM/YYYY à HH:mm')}</span>
+                        </div>
+                        <div className="bottom-row">
+                            {delivery.status === 'Done' && <button className="deliver-btn" onClick={() => handleDelivering(delivery)}>Prendre en livraison</button>}
+                            {delivery.status === 'Delivering' && (<>
+                                <input placeholder="Code de livraison" value={delivery.code} onChange={(e => setDeliveries((prev) => {
+                                    const newDeliveries = [...prev];
+                                    const index = newDeliveries.findIndex((del) => del.id_order === delivery.id_order);
+                                    newDeliveries[index].code = e.target.value;
+                                    return newDeliveries;
+                                }))}
+                                />
+                                <button className="deliver-btn" onClick={() => handleDelivered(delivery)}>Commande livrée</button>
+                            </>)}
+                            {delivery.status === 'Delivered' && <p>Commande déjà livrée</p>}
                         </div>
                     </div>
                 ))}

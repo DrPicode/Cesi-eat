@@ -5,6 +5,7 @@ import { JwtUserPayload } from '../models/Token';
 import { prisma } from "../database/client";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
 import { UserType } from "@prisma/client";
+import { Log } from '../models/log';
 
 const router = Router();
 
@@ -84,6 +85,9 @@ router.post('/login', async (req: Request, res: Response) => {
         );
         console.log("User", user);
         if (!user) {
+            console.log('creating log')
+            const log = new Log({ log: `user not found ${req.body.email}` })
+            await log.save();
             return res.status(404).send('Utilisateur non trouvé');
         }
         if (await bcrypt.compare(req.body.password, user.password)) {
@@ -96,11 +100,23 @@ router.post('/login', async (req: Request, res: Response) => {
                 path: "/",
             })
 
+            console.log('creating log')
+            const log = new Log({ log: `user ${JSON.stringify(user)} connected` })
+            await log.save();
+
             return res.status(200).json({
                 accessToken,
-                userId: user.id_user
+                userId: user.id_user,
+                userRole: user.type,
+                userName: user.lastName,
+                userFirstName: user.firstName,
+                userEmail: user.email,
+                userPhone: user.phone,
             });
         } else {
+            console.log('creating log')
+            const log = new Log({ log: `failed authentication for user ${req.body.email}` })
+            await log.save();
             return res.status(401).send('Mot de passe incorrect');
         }
     } catch (error) {

@@ -47,11 +47,16 @@ const LoginPage = () => {
                     })
                 });
                 if (response.ok) {
-                    const body = await response.json();
-                    console.log({ body });
-                    authProxyRestaurant.token = body.accessToken;
-                    authProxyRestaurant.userId = body.userId;
-                    navigate(`/home`);
+                    const data = await response.json();
+                    console.log({ data });
+                    authProxyRestaurant.token = data.accessToken;
+                    authProxyRestaurant.userId = data.userId;
+                    sessionStorage.setItem("User", JSON.stringify(data));
+                    if (data.userRole !== "Cooker") {
+                        navigate("/unauthorized");
+                    } else {
+                        navigate("/home");
+                    }
                 } else {
                     // Afficher le message d'erreur sur la page
                     const errorMessage = await response.text();
@@ -59,7 +64,7 @@ const LoginPage = () => {
                 }
             } catch (error) {
                 console.error(error);
-                setError('Une erreur est survenue lors de la connexion.');
+                setError(`Une erreur est survenue lors de la connexion. ${error}`);
             }
         }
     }

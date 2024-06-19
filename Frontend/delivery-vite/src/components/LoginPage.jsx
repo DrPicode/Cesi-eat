@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
-import {authProxyDelivery} from "../proxy/auth.proxy.js";
-import {useSnapshot} from "valtio";
+import { authProxyDelivery } from "../proxy/auth.proxy.js";
+import { useSnapshot } from "valtio";
 
 const LoginPage = () => {
     const navigate = useNavigate();
@@ -49,10 +49,17 @@ const LoginPage = () => {
 
                 if (response.ok) {
                     const body = await response.json();
-                    console.log({body});
+                    console.log({ body });
                     authProxyDelivery.token = body.accessToken;
                     authProxyDelivery.userId = body.userId;
-                    navigate(`/home`);
+                    sessionStorage.setItem("User", JSON.stringify(body));
+                    if (body.userRole !== "DeliveryMan") {
+                        navigate("/unauthorized");
+                    }
+                    else {
+                        console.log("Navigate to /home")
+                        navigate("/home");
+                    }
                 } else {
                     // Afficher le message d'erreur sur la page
                     const errorMessage = await response.text();
@@ -60,7 +67,7 @@ const LoginPage = () => {
                 }
             } catch (error) {
                 console.error(error);
-                setError('Une erreur est survenue lors de la connexion.');
+                setError(`Une erreur est survenue lors de la connexion. ${error}`);
             }
         }
     }

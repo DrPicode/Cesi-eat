@@ -1,4 +1,3 @@
-/* SignUpPage.css */
 body,
 html {
     margin: 0;
@@ -28,34 +27,48 @@ header h3 {
     margin: 0;
 }
 
-.signup-page {
+.home-page {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin-top: 5vh;
+    margin-bottom: 15vh;
     border-radius: 20px;
-}
-
-.signup-page form {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    border-radius: 10px;
-    width: 300px;
+}
+
+.home-page h1,
+.home-page h2,
+.home-page h3 {
+    text-align: center;
+}
+
+.home-page h2 {
+    margin-bottom: 20px;
+}
+
+.status-buttons,
+.menu-buttons {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    width: 100%;
 }
 
-.signup-page input,
-.signup-page select {
-    margin-bottom: 15px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: calc(100% - 20px);
+.status-buttons {
+    margin-bottom: 20px;
 }
 
-.signup-page button.primary {
+.status-buttons button,
+.menu-buttons button {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+button.primary {
     background-color: #FC8019;
     color: white;
     padding: 10px;
@@ -66,30 +79,43 @@ header h3 {
     margin-bottom: 10px;
 }
 
-.signup-page button.secondary {
+button.secondary {
     background-color: white;
     color: black;
     padding: 10px;
-    border: solid 2px;
-    border-color: #FC8019;
+    border: solid 2px #FC8019;
     border-radius: 5px;
     cursor: pointer;
     width: 100%;
     margin-bottom: 10px;
 }
 
-.signup-page button.primary:hover {
+button.tertiary {
+    background-color: #202020;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+button.primary:hover {
     background-color: rgb(205, 113, 0);
 }
 
-.signup-page button.secondary:hover {
+button.secondary:hover {
     background-color: lightgray;
     border-color: lightgray;
 }
 
+button.tertiary:hover {
+    background-color: #FC8019;
+}
+
 footer {
     background-color: #FC8019;
-    margin-top: 0px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -107,11 +133,4 @@ footer a {
     color: white;
     text-decoration: none;
     margin: 0 15px;
-}
-
-.error {
-    color: red;
-    font-size: 0.8em;
-    margin-top: -10px;
-    margin-bottom: 10px;
 }
