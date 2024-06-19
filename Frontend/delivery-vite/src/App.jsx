@@ -3,11 +3,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from './components/HomePage';
 import LoginPage from './components/LoginPage';
 import ProfilePage from './components/ProfilePage.jsx';
-import ModifyPage from './components/ModifyPage.jsx';
 import DeliveryPage from './components/DeliveryPage';
 import Unauthorized from "./components/Unauthorized.jsx";
-import Delivery1 from './components/Delivery1';
-import Delivery2 from './components/Delivery2';
 import { authProxyDelivery } from "./proxy/auth.proxy.js";
 import { useSnapshot } from "valtio";
 
@@ -53,10 +50,7 @@ function App() {
                         return (
                             <Routes>
                                 <Route path="/home" element={<HomePage />} />
-                                <Route path="/delivery2" element={<Delivery2 />} />
-                                <Route path="/delivery1" element={<Delivery1 />} />
                                 <Route path="/delivery" element={<DeliveryPage />} />
-                                <Route path="/modify" element={<ModifyPage />} />
                                 <Route path="/profile" element={<ProfilePage />} />
                             </Routes>
                         )

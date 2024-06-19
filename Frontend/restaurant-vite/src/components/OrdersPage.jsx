@@ -8,11 +8,12 @@ const OrdersPage = () => {
 
     const navigate = useNavigate();
     const [orders, setOrders] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const fetchOrders = async () => {
+    const fetchOrders = useCallback(async () => {
         try {
+            setIsLoading(true);
             if (authProxyRestaurant.userId) {
                 const headers = new Headers();
                 const response = await fetch(`/api/restaurants/user/${authProxyRestaurant.userId}`, {
@@ -44,15 +45,20 @@ const OrdersPage = () => {
             console.error(e);
             setError('Une erreur est survenue');
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
-    };
+    }, [authProxyRestaurant.userId, navigate]);
 
     useEffect(() => {
         fetchOrders();
-    }, [authProxyRestaurant.userId, navigate]);
+        const interval = setInterval(() => {
+            fetchOrders();
+        }, 15000);
 
-    if (loading) {
+        return () => clearInterval(interval);
+    }, [fetchOrders]);
+
+    if (isLoading) {
         return <div>Chargement...</div>;
     }
 
@@ -61,9 +67,8 @@ const OrdersPage = () => {
     }
 
     const handleAccept = async (orderId) => {
-        setLoading(true);
+        setIsLoading(true);
         try {
-            // Remplacer l'URL par celle de votre API backend
             const response = await axios.post(`/api/restaurants/orders/${orderId}/accept`);
             if (response.data.success) {
                 fetchOrders();
@@ -73,14 +78,13 @@ const OrdersPage = () => {
         } catch (error) {
             console.error('Erreur lors de l\'acceptation de la commande:', error);
             alert('Une erreur est survenue. Veuillez réessayer.');
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
     const handleReject = async (orderId) => {
-        setLoading(true);
+        setIsLoading(true);
         try {
-            // Remplacer l'URL par celle de votre API backend
             const response = await axios.post(`/api/restaurants/orders/${orderId}/reject`);
             if (response.data.success) {
                 fetchOrders();
@@ -90,14 +94,13 @@ const OrdersPage = () => {
         } catch (error) {
             console.error('Erreur lors du refus de la commande:', error);
             alert('Une erreur est survenue. Veuillez réessayer.');
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
     const handleReady = async (orderId) => {
-        setLoading(true);
+        setIsLoading(true);
         try {
-            // Remplacer l'URL par celle de votre API backend
             const response = await axios.post(`/api/restaurants/orders/${orderId}/ready`);
             if (response.data.success) {
                 fetchOrders();
@@ -107,7 +110,7 @@ const OrdersPage = () => {
         } catch (error) {
             console.error('Erreur lors du refus de la commande:', error);
             alert('Une erreur est survenue. Veuillez réessayer.');
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
@@ -126,7 +129,7 @@ const OrdersPage = () => {
             <div className="orders-page">
                 <h2>Commandes</h2>
                 <div className="orders-container">
-                    {loading ? <p>Loading...</p> : orders.map(order => (
+                    {orders.map(order => (
                         <div key={order.id_order} className="order">
                             <p><strong>N° {order.id_order}</strong></p>
                             <p>{order.cart?.articles.map(a => a.article.name).join(', ')}</p>
@@ -158,4 +161,4 @@ const OrdersPage = () => {
     );
 };
 
-export default OrdersPage;
+export default OrdersPage
