@@ -1,22 +1,34 @@
 import express, { Request, Response } from 'express';
+import multer from 'multer';
 import { PrismaClient } from '@prisma/client';
 
 const router = express.Router();
 const prisma = new PrismaClient();
 
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'Backend/content');
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
+    },
+});
+
+const upload = multer({ storage: storage });
+
 //create a new article
-router.post('/create', async (req: express.Request, res: express.Response) => {
-    const { name, price, thumbnail, type, restaurant_id_restaurant } = req.body;
+router.post('/create', upload.single('thumbnail'), async (req: express.Request, res: express.Response) => {
+    const { name, price, type, restaurant_id_restaurant } = req.body;
 
     try {
         const newArticle = await prisma.article.create({
             data: {
                 name,
-                price,
-                thumbnail: "null",
+                price: parseFloat(price),
+                thumbnail: "http://localhost:8080/content/" + req.file.filename,
                 is_deleted: false,
                 type,
-                restaurant_id_restaurant,
+                restaurant_id_restaurant: parseInt(restaurant_id_restaurant),
             },
         });
         return res.status(201).json(newArticle);

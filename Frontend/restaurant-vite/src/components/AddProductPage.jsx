@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AddProductPage.css';
 import { authProxyRestaurant } from "../proxy/auth.proxy.js";
@@ -8,6 +8,7 @@ const AddProductPage = () => {
     const [productName, setProductName] = useState('');
     const [productPrice, setProductPrice] = useState('');
     const [productType, setProductType] = useState('');
+    const [productThumbnail, setProductThumbnail] = useState(null);
     const [errors, setErrors] = useState({});
     const [restaurant, setRestaurant] = useState({});
     const [loading, setLoading] = useState(true);
@@ -69,19 +70,19 @@ const AddProductPage = () => {
         }
 
         try {
+            const formData = new FormData();
+            formData.append('thumbnail', productThumbnail);
+            formData.append('name', productName);
+            formData.append('price', parseFloat(productPrice));
+            formData.append('type', productType);
+            formData.append('restaurant_id_restaurant', restaurant.id_restaurant);
+
             const response = await fetch('/api/articles/create', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${authProxyRestaurant.token}` // Ajoutez le token d'authentification si nécessaire
+                    'Authorization': `Bearer ${authProxyRestaurant.token}`
                 },
-                body: JSON.stringify({
-                    name: productName,
-                    price: parseFloat(productPrice),
-                    thumbnail: null,
-                    type: productType,
-                    restaurant_id_restaurant: restaurant.id_restaurant
-                })
+                body: formData
             });
 
             if (response.ok) {
@@ -91,6 +92,8 @@ const AddProductPage = () => {
                 setProductName('');
                 setProductPrice('');
                 setProductType('');
+                setProductThumbnail(null);
+                navigate('/products');
             } else {
                 console.error('Erreur lors de la création du produit');
             }
@@ -171,6 +174,17 @@ const AddProductPage = () => {
                             <option value="SideDish">Accompagnement</option>
                         </select>
                         {errors.productType && <p className="error">{errors.productType}</p>}
+                    </div>
+
+                    <div className="form-group">
+                        <input
+                            onChange={(e) => setProductThumbnail(e.target.files[0])}
+                            title='Image du produit'
+                            type="file"
+                            accept="image/*"
+                            id="thumbnail"
+                            name="thumbnail"
+                        />
                     </div>
 
                     <button className="primary" type="submit">Enregistrer</button>

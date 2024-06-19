@@ -54,7 +54,7 @@ const Login = () => {
                     console.log({ body });
                     authProxy.token = body.accessToken;
                     authProxy.userId = body.userId;
-                    sessionStorage.setItem("User", JSON.stringify(body));
+                    localStorage.setItem("User", JSON.stringify(body));
                     navigate("/");
                 } else {
                     // Afficher le message d'erreur sur la page

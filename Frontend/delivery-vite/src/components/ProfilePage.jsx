@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { authProxyDelivery } from "../proxy/auth.proxy.js";
 import './ProfilePage.css';
 
@@ -22,8 +22,8 @@ const ProfilePage = () => {
             try {
                 const headers = new Headers();
                 headers.set("Authorization", `Bearer ${authProxyDelivery.token}`)
-                const response = await fetch(`/api/users/${id}`, {headers}).then(async (response) => {
-                    if (response.ok){
+                const response = await fetch(`/api/users/${id}`, { headers }).then(async (response) => {
+                    if (response.ok) {
                         const data = await response.json()
                         setUser(data.firstName + " " + data.lastName)
                         setEmail(data.email)
@@ -49,7 +49,7 @@ const ProfilePage = () => {
                 method: "GET",
                 headers
             }).then(async (response) => {
-                if (response.ok){
+                if (response.ok) {
                     authProxyDelivery.token = null;
                     navigate("/")
                 } else {
@@ -76,7 +76,6 @@ const ProfilePage = () => {
                     <p><strong>Numéro de téléphone :</strong><br />{phone}</p>
                     <p><strong>Mot de passe :</strong><br />*******</p>
                 </div>
-                <button className="primary" onClick={() => navigate('/modify')}>Modifier les informations</button>
                 <button className="secondary" onClick={disconnect}>Déconnexion</button>
             </div>
             <footer>

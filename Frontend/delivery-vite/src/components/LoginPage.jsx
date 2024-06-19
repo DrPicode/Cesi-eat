@@ -52,7 +52,7 @@ const LoginPage = () => {
                     console.log({ body });
                     authProxyDelivery.token = body.accessToken;
                     authProxyDelivery.userId = body.userId;
-                    sessionStorage.setItem("User", JSON.stringify(body));
+                    localStorage.setItem("User", JSON.stringify(body));
                     if (body.userRole !== "DeliveryMan") {
                         navigate("/unauthorized");
                     }

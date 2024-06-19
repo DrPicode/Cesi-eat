@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Unauthorized.css';
-import {authProxyRestaurant} from "../proxy/auth.proxy.js";
+import { authProxyRestaurant } from "../proxy/auth.proxy.js";
 
 const Unauthorized = () => {
     const navigate = useNavigate();
@@ -16,7 +16,7 @@ const Unauthorized = () => {
             }).then(async (response) => {
                 if (response.ok) {
                     authProxyRestaurant.token = null;
-                    sessionStorage.removeItem("User");
+                    localStorage.removeItem("User");
                     navigate("/")
                 } else {
                     alert("Not Authorized");

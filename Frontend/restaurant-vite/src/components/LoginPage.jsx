@@ -51,7 +51,7 @@ const LoginPage = () => {
                     console.log({ data });
                     authProxyRestaurant.token = data.accessToken;
                     authProxyRestaurant.userId = data.userId;
-                    sessionStorage.setItem("User", JSON.stringify(data));
+                    localStorage.setItem("User", JSON.stringify(data));
                     if (data.userRole !== "Cooker") {
                         navigate("/unauthorized");
                     } else {

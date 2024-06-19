@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { prisma } from "../database/client";
+import multer from 'multer';
 
 const router = express.Router();
 
@@ -92,17 +93,30 @@ router.post('/:restaurantId/open', async (req: Request, res: Response) => {
     return res.status(200).json({ success: true });
 });
 
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'Backend/content');
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
+    },
+});
+
+const upload = multer({ storage: storage });
+
 // create a restaurant
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', upload.single('thumbnail'), async (req: Request, res: Response) => {
+    const { name, type, user_id_user } = req.body;
+
     const restaurant = await prisma.restaurant.create({
         data: {
-            name: req.body.name,
+            name,
             is_deleted: false,
-            type: req.body.type,
-            thumbnail: "empty",
+            type,
+            thumbnail: "http://localhost:8080/content/" + req.file.filename,
             user: {
                 connect: {
-                    id_user: req.body.user_id_user
+                    id_user: parseInt(user_id_user),
                 }
             }
         }

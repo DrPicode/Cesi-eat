@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'; // Importer useNavigate
 import { BsEye, BsEyeSlash } from 'react-icons/bs';
 import shape1 from '../assets/Union.png';
 import shape2 from '../assets/shape.png';
-import {authProxy} from "../proxy/auth.proxy.js";
+import { authProxy } from "../proxy/auth.proxy.js";
 
 const Register = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -23,6 +23,7 @@ const Register = () => {
     const navigate = useNavigate(); // Utiliser useNavigate pour rediriger l'utilisateur
     const [restaurantName, setRestaurantName] = useState("");
     const [restaurantType, setRestaurantType] = useState("");
+    const [thumbnail, setThumbnail] = useState(null);
 
     const handleLastNameChange = (e) => {
         setLastName(e.target.value);
@@ -173,16 +174,16 @@ const Register = () => {
                             console.log({ body });
                             authProxy.token = body.accessToken;
                             if (status === "restaurateur") {
+                                const formData = new FormData();
+                                formData.append("thumbnail", thumbnail);
+                                formData.append("name", restaurantName);
+                                formData.append("type", restaurantType);
+                                formData.append("user_id_user", body.userId);
+
+
                                 const restaurantResult = await fetch("/api/restaurants", {
                                     method: "POST",
-                                    headers: {
-                                        "Content-Type": "application/json",
-                                    },
-                                    body: JSON.stringify({
-                                        name: restaurantName,
-                                        type: restaurantType,
-                                        user_id_user: body.userId,
-                                    }),
+                                    body: formData,
                                 });
                                 if (restaurantResult.ok) {
                                     const restaurantBody = await restaurantResult.json();
@@ -371,6 +372,16 @@ const Register = () => {
                                     <option value="Salad">Salad</option>
                                 </select>
                                 {errors.restaurantType && <span>{errors.restaurantType}</span>}
+                            </div>
+                            <div>
+                                <input
+                                    onChange={(e) => setThumbnail(e.target.files[0])}
+                                    title='Image du restaurant'
+                                    type="file"
+                                    accept="image/*"
+                                    id="thumbnail"
+                                    name="thumbnail"
+                                />
                             </div>
                         </>
                     )}

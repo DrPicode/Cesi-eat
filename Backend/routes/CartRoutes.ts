@@ -1,14 +1,20 @@
 // routes/CartRoutes.ts
-import express  from 'express';
+import express from 'express';
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
-import {validateToken} from "../utils/jwt";
+import { validateToken } from "../utils/jwt";
 
 const router = Router();
 const prisma = new PrismaClient();
 
 // Get all carts
 router.get('/', async (req, res) => {
+    // Check token
+    const isValidToken = validateToken(req);
+    if (isValidToken == false) {
+        res.status(401).json({ error: "Unauthorized" })
+    }
+
     try {
         const carts = await prisma.cart.findMany({
             include: {

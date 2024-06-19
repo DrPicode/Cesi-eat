@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './OrdersPage.css';
-import {authProxyRestaurant} from "../proxy/auth.proxy.js";
+import { authProxyRestaurant } from "../proxy/auth.proxy.js";
 
 const OrdersPage = () => {
 
@@ -131,6 +131,7 @@ const OrdersPage = () => {
                             <p><strong>N° {order.id_order}</strong></p>
                             <p>{order.cart?.articles.map(a => a.article.name).join(', ')}</p>
                             <p>{order.price}</p>
+                            <p>{order.delivery_hour}</p>
                             <div className="order-buttons">
                                 {order.status === "Paid" && (<>
                                     <button className="secondary" onClick={() => handleReject(order.id_order)}>Refuser</button>

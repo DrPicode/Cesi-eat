@@ -16,7 +16,7 @@ const HomePage = () => {
             }).then(async (response) => {
                 if (response.ok) {
                     authProxyDelivery.token = null;
-                    sessionStorage.removeItem("User");
+                    localStorage.removeItem("User");
                     navigate("/")
                 } else {
                     alert("Not Authorized");

@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { MdPlace } from 'react-icons/md';
 import HistoryCard from '../components/HistoryCard';
 import { authProxy } from "../proxy/auth.proxy.js";
-import {useNavigate, useParams} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const Profile = () => {
-    const {id} = useParams();
+    const { id } = useParams();
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [showModal, setShowModal] = useState(false);
@@ -25,7 +25,7 @@ const Profile = () => {
                 const response = await fetch(`/api/users/${id}`, {
                     headers
                 }).then(async (response) => {
-                    if (response.ok){
+                    if (response.ok) {
                         const data = await response.json()
                         setUser(data)
                     } else {
@@ -48,9 +48,9 @@ const Profile = () => {
                 method: "GET",
                 headers
             }).then(async (response) => {
-                if (response.ok){
+                if (response.ok) {
                     authProxy.token = null;
-                    sessionStorage.removeItem("User");
+                    localStorage.removeItem("User");
                     navigate("/")
                 } else {
                     alert("Not Authorized");
@@ -70,9 +70,9 @@ const Profile = () => {
                 method: "DELETE",
                 headers
             }).then(async (response) => {
-                if (response.ok){
+                if (response.ok) {
                     authProxy.token = null;
-                    sessionStorage.removeItem("User");
+                    localStorage.removeItem("User");
                     navigate("/")
                 } else {
                     alert("Not Authorized");
@@ -126,7 +126,7 @@ const Profile = () => {
                     {/* adresse */}
                     <div className="flex flex-col">
                         <div className=" font-semibold text-2xl flex items-center gap-2">
-                            <MdPlace className="fill-secColor w-6 h-10"/>
+                            <MdPlace className="fill-secColor w-6 h-10" />
                             <h3>Informations Personelles</h3>
                         </div>
                         <div className='mt-8'></div>
@@ -134,10 +134,10 @@ const Profile = () => {
                             {user ? (
                                 <div className={'flex flex-col bg-lightGray py-2 px-5 lg:py-10 lg:px-20 rounded-lg'}>
                                     <p className={'text-primary w-72'}>
-                                        Nom : {user.lastName}<br/>
-                                        Prénom : {user.firstName}<br/>
-                                        Email : {user.email}<br/>
-                                        Numéro de téléphone : {user.phone}<br/>
+                                        Nom : {user.lastName}<br />
+                                        Prénom : {user.firstName}<br />
+                                        Email : {user.email}<br />
+                                        Numéro de téléphone : {user.phone}<br />
                                         Mot de passe : ********
                                     </p>
                                     <div className="flex gap-4 mt-4">
@@ -148,11 +148,11 @@ const Profile = () => {
                                             Modifier
                                         </button>
                                         <button className="bg-red-500 text-white py-2 px-4 rounded"
-                                                onClick={deleteAccount}>Supprimer le
+                                            onClick={deleteAccount}>Supprimer le
                                             compte
                                         </button>
                                         <button className="bg-mainColor text-white py-2 px-4 rounded"
-                                                onClick={disconnect}>Déconnexion
+                                            onClick={disconnect}>Déconnexion
                                         </button>
                                     </div>
                                 </div>
@@ -163,7 +163,7 @@ const Profile = () => {
                     </div>
                 </div>
                 <div className="w-1/2">
-                    <HistoryCard userId={id}/>
+                    <HistoryCard userId={id} />
                 </div>
             </div>
             {showModal && (

@@ -1,28 +1,34 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Cart from '../components/Cart';
 import restaurantpage from '../assets/mcfirst.jpg';
-import {Link, useParams} from 'react-router-dom';
-
+import { Link, useParams } from 'react-router-dom';
 
 const RestaurantPage = () => {
   const [selectedSandwich, setSelectedSandwich] = useState(null);
   const [selectedSideFood, setSelectedSideFood] = useState(null);
   const [selectedDrink, setSelectedDrink] = useState(null);
-
   const [restaurant, setRestaurant] = useState([]);
+  const { id } = useParams();
 
-  const {id} = useParams();
-    useEffect(() => {
-        // Fetch data from the backend
-        fetch(`/api/restaurants/${id}`).then(async (response) => {
-            if (response.ok) {
-                return await response.json();
-            }
-        }).then((data) => {
-            setRestaurant(data);
-        });
-    }, [id]);
-    
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`/api/restaurants/${id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setRestaurant(data);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+    const interval = setInterval(fetchData, 15000);
+
+    return () => clearInterval(interval);
+  }, [id]);
+
   const handleCardClick = (type, value) => {
     switch (type) {
       case 'sandwich':
@@ -40,15 +46,15 @@ const RestaurantPage = () => {
   };
 
   return (
-  <>
-    {restaurant && restaurant.articles ? (
+    <>
+      {restaurant && restaurant.articles ? (
         <div className=" w-full h-full flex flex-col mt-10 ">
           <div className="bg-mainColor h-72  flex  justify-center items-center gap-10 p-10">
             <div>
               <img
-                  src={restaurant.thumbnail}
-                  alt="Restaurant"
-                  className=" object-cover w-full hidden md:block"
+                src={restaurant.thumbnail}
+                alt="Restaurant"
+                className=" object-cover w-full hidden md:block"
               />
             </div>
             <div className="flex flex-col justify-between item-center gap-10">
@@ -73,24 +79,24 @@ const RestaurantPage = () => {
           <div className="text-black relative h-full border-2">
             <div className=" section__padding section__margin flex flex-col md:flex-row justify-between w-full">
               <div className="border rounded-lg md:border-none mb-2 hidden lg:flex relative"
-                   style={{padding: "0 30px 0 0"}}>
+                style={{ padding: "0 30px 0 0" }}>
                 <div className="flex flex-col justify-start ">
                   <Link to={''} className="active:text-secColor text-secColor text-base font-medium mb-2 ">
                     Menu Mc First
                   </Link>
                   <Link
-                      to={''}
-                      className=" text-white font-medium mb-2"
+                    to={''}
+                    className=" text-white font-medium mb-2"
                   >
                     Recommendations
                   </Link>
                 </div>
                 <div className='hidden md:block absolute bg-gray-400 h-[400px] '
-                     style={{right: "0px", width: "1px"}}></div>
+                  style={{ right: "0px", width: "1px" }}></div>
               </div>
               <div className="  border rounded-lg md:border-none mb-2 flex ">
                 <div
-                    className="flex flex-col md:flex-row md:items-start justify-center md:justify-between gap-5 mx-10">
+                  className="flex flex-col md:flex-row md:items-start justify-center md:justify-between gap-5 mx-10">
                   <div className="flex-1">
                     <h4 className=" font-medium text-xl">
                       Menu Mc First
@@ -107,7 +113,7 @@ const RestaurantPage = () => {
                         </p>
                       </div>
                       <div className="flex justify-center items-center ml-4 mt-4 md:mt-0">
-                        <img src={restaurantpage} alt="Restaurant Page" className="w-full h-auto"/>
+                        <img src={restaurantpage} alt="Restaurant Page" className="w-full h-auto" />
                       </div>
                     </div>
 
@@ -117,20 +123,20 @@ const RestaurantPage = () => {
                       <div className="flex flex-wrap justify-between">
 
                         {restaurant?.articles && restaurant.articles.filter(x => x.type === 'MainCourse').map((item, i) => (
-                            <div
-                                key={i}
-                                className={`w-full md:w-1/3 p-2 rounded-lg shadow-md cursor-pointer ${selectedSandwich === item.id_article ? 'border-4 border-orange-400' : ''
-                                }`}
-                                onClick={() => handleCardClick('sandwich', item.id_article)}
-                            >
-                              <div className="bg-white p-4">
-                                <img src={item.thumbnail} alt={item.name}
-                                     className="w-full h-40 object-cover rounded-t-lg"/>
-                                <h4 className="font-medium text-base mt-2 text-center">{item.name}</h4>
-                                <h4 className="font-medium text-base mt-2 text-center">{item.price} €</h4>
+                          <div
+                            key={i}
+                            className={`w-full md:w-1/3 p-2 rounded-lg shadow-md cursor-pointer ${selectedSandwich === item.id_article ? 'border-4 border-orange-400' : ''
+                              }`}
+                            onClick={() => handleCardClick('sandwich', item.id_article)}
+                          >
+                            <div className="bg-white p-4">
+                              <img src={item.thumbnail} alt={item.name}
+                                className="w-full h-40 object-cover rounded-t-lg" />
+                              <h4 className="font-medium text-base mt-2 text-center">{item.name}</h4>
+                              <h4 className="font-medium text-base mt-2 text-center">{item.price} €</h4>
 
-                              </div>
                             </div>
+                          </div>
                         ))}
                       </div>
                     </div>
@@ -139,19 +145,19 @@ const RestaurantPage = () => {
                       <h3 className="font-medium text-lg py-2">Choisissez votre accompagnement</h3>
                       <div className="flex flex-wrap justify-between">
                         {restaurant?.articles && restaurant.articles.filter(x => x.type === 'SideDish').map((item, i) => (
-                            <div
-                                key={i}
-                                className={`w-full md:w-1/3 p-2 rounded-lg shadow-md cursor-pointer ${selectedSideFood === item.id_article ? 'border-4 border-orange-400' : ''
-                                }`}
-                                onClick={() => handleCardClick('SideFood', item.id_article)}
-                            >
-                              <div className="bg-white p-4">
-                                <img src={item.thumbnail} alt={item.name}
-                                     className="w-full h-40 object-cover rounded-t-lg"/>
-                                <h4 className="font-medium text-base mt-2 text-center">{item.name}</h4>
-                                <h4 className="font-medium text-base mt-2 text-center">{item.price} €</h4>
-                              </div>
+                          <div
+                            key={i}
+                            className={`w-full md:w-1/3 p-2 rounded-lg shadow-md cursor-pointer ${selectedSideFood === item.id_article ? 'border-4 border-orange-400' : ''
+                              }`}
+                            onClick={() => handleCardClick('SideFood', item.id_article)}
+                          >
+                            <div className="bg-white p-4">
+                              <img src={item.thumbnail} alt={item.name}
+                                className="w-full h-40 object-cover rounded-t-lg" />
+                              <h4 className="font-medium text-base mt-2 text-center">{item.name}</h4>
+                              <h4 className="font-medium text-base mt-2 text-center">{item.price} €</h4>
                             </div>
+                          </div>
                         ))}
                       </div>
                     </div>
@@ -160,19 +166,19 @@ const RestaurantPage = () => {
                       <h3 className="font-medium text-lg py-2">Choisissez votre boisson</h3>
                       <div className="flex flex-wrap justify-between">
                         {restaurant?.articles && restaurant.articles.filter(x => x.type === 'Drink').map((item, i) => (
-                            <div
-                                key={i}
-                                className={`w-full md:w-1/3 p-2 rounded-lg shadow-md cursor-pointer ${selectedDrink === item.id_article ? 'border-4 border-orange-400' : ''
-                                }`}
-                                onClick={() => handleCardClick('Drink', item.id_article)}
-                            >
-                              <div className="bg-white p-4">
-                                <img src={item.thumbnail} alt={item.name}
-                                     className="w-full h-40 object-cover rounded-t-lg"/>
-                                <h4 className="font-medium text-base mt-2 text-center">{item.name}</h4>
-                                <h4 className="font-medium text-base mt-2 text-center">{item.price} €</h4>
-                              </div>
+                          <div
+                            key={i}
+                            className={`w-full md:w-1/3 p-2 rounded-lg shadow-md cursor-pointer ${selectedDrink === item.id_article ? 'border-4 border-orange-400' : ''
+                              }`}
+                            onClick={() => handleCardClick('Drink', item.id_article)}
+                          >
+                            <div className="bg-white p-4">
+                              <img src={item.thumbnail} alt={item.name}
+                                className="w-full h-40 object-cover rounded-t-lg" />
+                              <h4 className="font-medium text-base mt-2 text-center">{item.name}</h4>
+                              <h4 className="font-medium text-base mt-2 text-center">{item.price} €</h4>
                             </div>
+                          </div>
                         ))}
                       </div>
                     </div>
@@ -180,22 +186,22 @@ const RestaurantPage = () => {
                 </div>
               </div>
               <Cart
-                  selectedSandwich={selectedSandwich}
-                  selectedSideFood={selectedSideFood}
-                  selectedDrink={selectedDrink}
-                  articles={restaurant.articles}
-                  restaurant={restaurant}
+                selectedSandwich={selectedSandwich}
+                selectedSideFood={selectedSideFood}
+                selectedDrink={selectedDrink}
+                articles={restaurant.articles}
+                restaurant={restaurant}
               />
             </div>
           </div>
         </div>
-    ) : (
+      ) : (
         <div className="flex justify-center items-center h-full">
           <p>Chargement...</p>
         </div>
-    )
-    }
-  </>
+      )
+      }
+    </>
   );
 };
 
