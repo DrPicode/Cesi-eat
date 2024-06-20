@@ -7,6 +7,19 @@ const HomePage = () => {
     const navigate = useNavigate();
     const [restaurant, setRestaurant] = useState({});
     const [loading, setLoading] = useState(true);
+    const [isOpen, setIsOpen] = useState(fetch(`/api/restaurants/user/${authProxyRestaurant.userId}`, {
+        method: "GET"
+    }).then(async (response) => {
+        if (response.ok) {
+            const data = await response.json();
+            setIsOpen(data.is_open)
+            return data.is_open;
+        } else {
+            alert("Not Authorized");
+            navigate("/")
+        }
+
+    }));
 
     useEffect(() => {
         if (authProxyRestaurant.userId) {
@@ -33,24 +46,30 @@ const HomePage = () => {
     }, [authProxyRestaurant.userId]);
 
     const disconnect = () => {
-        try {
-            const headers = new Headers();
-            headers.set("Authorization", `Bearer ${authProxyRestaurant.token}`)
-            fetch(`/api/auth/logout`, {
-                method: "GET",
-                headers
-            }).then(async (response) => {
-                if (response.ok) {
-                    authProxyRestaurant.token = null;
-                    localStorage.removeItem("User");
-                    navigate("/")
-                } else {
-                    alert("Not Authorized");
-                    navigate("/")
-                }
-            });
-        } catch (e) {
-            console.error(e)
+        if (isOpen) {
+            alert("Vous ne pouvez pas vous déconnecter si votre restaurant est ouvert");
+            return;
+        }
+        else {
+            try {
+                const headers = new Headers();
+                headers.set("Authorization", `Bearer ${authProxyRestaurant.token}`)
+                fetch(`/api/auth/logout`, {
+                    method: "GET",
+                    headers
+                }).then(async (response) => {
+                    if (response.ok) {
+                        authProxyRestaurant.token = null;
+                        localStorage.removeItem("User");
+                        navigate("/")
+                    } else {
+                        alert("Not Authorized");
+                        navigate("/")
+                    }
+                });
+            } catch (e) {
+                console.error(e)
+            }
         }
     };
 
@@ -73,7 +92,7 @@ const HomePage = () => {
                             headers
                         }).then(async (response) => {
                             if (response.ok) {
-                                setRestaurant({ ...restaurant, isOpen: true });
+                                setIsOpen(true);
                             } else {
                                 alert("Not Authorized");
                                 navigate("/")
@@ -111,7 +130,7 @@ const HomePage = () => {
                             headers
                         }).then(async (response) => {
                             if (response.ok) {
-                                setRestaurant({ ...restaurant, isOpen: false });
+                                setIsOpen(false);
                             } else {
                                 alert("Not Authorized");
                                 navigate("/")
@@ -147,13 +166,13 @@ const HomePage = () => {
                     <h2>{restaurant.name}</h2>
                     <div className="status-buttons">
                         <button
-                            className={restaurant.isOpen ? "primary" : "secondary"}
+                            className={isOpen ? "primary" : "secondary"}
                             onClick={openRestaurant}
                         >
                             Ouvert
                         </button>
                         <button
-                            className={!restaurant.isOpen ? "primary" : "secondary"}
+                            className={!isOpen ? "primary" : "secondary"}
                             onClick={closeRestaurant}
                         >
                             Fermé
