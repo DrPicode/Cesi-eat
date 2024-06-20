@@ -83,4 +83,4 @@ npm run dev
 
 ## License
 
-This project is licensed under the MIT License. CeSiEats © 2021. All Rights Reserved.
+This project is licensed under the MIT License. CeSiEats © 2024. All Rights Reserved.
