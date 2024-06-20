@@ -1,6 +1,7 @@
 import express from 'express';
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
+import {validateToken} from "../utils/jwt";
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -24,6 +25,10 @@ router.get('/:address', async (req: express.Request, res: express.Response) => {
 
 // connect the address to the restaurant
 router.patch('/linkToRestaurant', async (req: express.Request, res: express.Response) => {
+    const token: any = validateToken(req);
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
     const linkRestaurant = await prisma.address.update({
         where: {
             id_address: req.body.id_address,
@@ -37,6 +42,23 @@ router.patch('/linkToRestaurant', async (req: express.Request, res: express.Resp
         },
     });
     res.status(200).json(linkRestaurant);
+});
+
+router.post('/', async (req: express.Request, res: express.Response) => {
+    const token: any = validateToken(req);
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const { address, city, postalCode } = req.body;
+    const newAddress = await prisma.address.create({
+        data: {
+            address,
+            city,
+            postalCode,
+            is_deleted: false,
+        },
+    });
+    res.status(200).json(newAddress);
 });
 
 export default router;

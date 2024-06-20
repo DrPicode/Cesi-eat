@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './DeliveryPage.css';
 import moment from 'moment';
+import {authProxyDelivery} from "../proxy/auth.proxy.js";
 
 const DeliveryPage = () => {
     const navigate = useNavigate();
@@ -27,6 +28,10 @@ const DeliveryPage = () => {
         setIsLoading(true);
         fetch('/api/deliveries/deliveries/' + delivery.id_order + '/delivering', {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authProxyDelivery.token}`
+            },
         })
             .then(response => response.json())
             .then(data => {
@@ -42,7 +47,8 @@ const DeliveryPage = () => {
         fetch('/api/deliveries/deliveries/' + delivery.id_order + '/delivered', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authProxyDelivery.token}`
             },
             body: JSON.stringify({
                 code: delivery.code

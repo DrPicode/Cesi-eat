@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { prisma } from "../database/client";
 import multer from 'multer';
+import { validateToken } from "../utils/jwt";
 
 const router = express.Router();
 
@@ -51,6 +52,7 @@ router.get('/orders', async (req: Request, res: Response) => {
 
 //change status of order to "preparing"
 router.post('/orders/:orderId/accept', async (req: Request, res: Response) => {
+    if (!validateToken(req)) return res.status(401).send("Unauthorized");
     const orderId = parseInt(req.params.orderId);
     console.log('accepting order', orderId)
     await prisma.order.update({ where: { id_order: orderId }, data: { status: "Preparing" } });
@@ -59,6 +61,7 @@ router.post('/orders/:orderId/accept', async (req: Request, res: Response) => {
 
 //change status of order to "cancelled"
 router.post('/orders/:orderId/reject', async (req: Request, res: Response) => {
+    if (!validateToken(req)) return res.status(401).send("Unauthorized");
     const orderId = parseInt(req.params.orderId);
     console.log('cancelling order', orderId)
     await prisma.order.update({ where: { id_order: orderId }, data: { status: "Cancelled" } });
@@ -67,6 +70,7 @@ router.post('/orders/:orderId/reject', async (req: Request, res: Response) => {
 
 //change status of order to "done"
 router.post('/orders/:orderId/ready', async (req: Request, res: Response) => {
+    if (!validateToken(req)) return res.status(401).send("Unauthorized");
     const orderId = parseInt(req.params.orderId);
     console.log('cancelling order', orderId)
     await prisma.order.update({ where: { id_order: orderId }, data: { status: "Done" } });
@@ -86,6 +90,7 @@ router.get('/name/:name', async (req: Request, res: Response) => {
 
 // change the status of a restaurant to closed
 router.post('/:restaurantId/close', async (req: Request, res: Response) => {
+    if (!validateToken(req)) return res.status(401).send("Unauthorized");
     const restaurantId = parseInt(req.params.restaurantId);
     console.log('closing restaurant', restaurantId)
     await prisma.restaurant.update({ where: { id_restaurant: restaurantId }, data: { is_open: false } });
@@ -94,6 +99,7 @@ router.post('/:restaurantId/close', async (req: Request, res: Response) => {
 
 // change the status of a restaurant to open
 router.post('/:restaurantId/open', async (req: Request, res: Response) => {
+    if (!validateToken(req)) return res.status(401).send("Unauthorized");
     const restaurantId = parseInt(req.params.restaurantId);
     console.log('opening restaurant', restaurantId)
     await prisma.restaurant.update({ where: { id_restaurant: restaurantId }, data: { is_open: true } });
@@ -113,6 +119,10 @@ const upload = multer({ storage: storage });
 
 // create a restaurant
 router.post('/', upload.single('thumbnail'), async (req: Request, res: Response) => {
+    const token: any = validateToken(req);
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
     const { name, type, user_id_user } = req.body;
 
     const restaurant = await prisma.restaurant.create({

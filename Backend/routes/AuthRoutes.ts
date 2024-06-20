@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { JwtUserPayload } from '../models/Token';
 import { prisma } from "../database/client";
-import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
+import {generateAccessToken, generateRefreshToken, validateToken} from "../utils/jwt";
 import { UserType } from "@prisma/client";
 import { Log } from '../models/log';
 
@@ -153,6 +153,10 @@ router.get('/token', async (req: Request, res: Response) => {
 
 // Disconnect
 router.get('/logout', async (req: Request, res: Response) => {
+    const token: any = validateToken(req);
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
     res.cookie("refresh", "", { httpOnly: true, maxAge: 0 })
     res.status(204).send();
 });

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { MdPlace } from 'react-icons/md';
 import { AiOutlineCalendar } from 'react-icons/ai';
 import CartCheckOut from "../components/CartCheckOut.jsx";
+import { authProxy } from "../proxy/auth.proxy.js";
 
 const CheckOut = () => {
   const [activeNow, setActiveNow] = useState(true);
@@ -13,27 +14,23 @@ const CheckOut = () => {
   const [newCity, setNewCity] = useState('');
   const [newZipCode, setNewZipCode] = useState('');
 
+  const intervalRef = useRef(null);
+
   const fetchAddresses = async () => {
     try {
       const response = await fetch('/api/addresses');
-      return await response.json();
+      const addressesData = await response.json();
+      setAddresses(addressesData);
     } catch (error) {
       console.error('Error fetching addresses:', error);
-      throw error;
     }
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const addressesData = await fetchAddresses();
-        setAddresses(addressesData);
-      } catch (error) {
-        console.error('Error fetching addresses:', error);
-      }
-    };
-    fetchData();
-  }, []);
+    fetchAddresses();
+    intervalRef.current = setInterval(fetchAddresses, 15000); // 15000 ms = 15 secondes
+    return () => clearInterval(intervalRef.current);
+  }, []); // Tableau de dépendances vide pour n'exécuter qu'une fois
 
   const handleActiveNowToggle = () => {
     setActiveNow(!activeNow);
@@ -73,20 +70,30 @@ const CheckOut = () => {
     fetch('/api/addresses', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${authProxy.token}`,
       },
-      body: JSON.stringify({ address: newAddress }),
+      body: JSON.stringify({
+        address: newAddress,
+        postalCode: newZipCode,
+        city: newCity
+      }),
     })
-      .then(() => {
-        const newAddressObj = { address: newAddress };
-        setAddresses([...addresses, newAddressObj]);
-        setSelectedAddress(newAddress);
-
-        handleCloseAddressInput();
-      })
-      .catch((error) => {
-        console.error('Error adding new address:', error);
-      });
+        .then(() => {
+          const newAddressObj = { address: newAddress };
+          setAddresses([...addresses, newAddressObj]);
+          setSelectedAddress(newAddress);
+          const newPostalCode = { postalCode: newZipCode };
+          setAddresses([...addresses, newPostalCode]);
+          setSelectedAddress(newZipCode);
+          const newCityObj = { city: newCity };
+          setAddresses([...addresses, newCityObj]);
+          setSelectedAddress(newCity);
+          handleCloseAddressInput();
+        })
+        .catch((error) => {
+          console.error('Error adding new address:', error);
+        });
   };
 
   return (

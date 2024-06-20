@@ -45,7 +45,7 @@ const Navbar = () => {
           <input
             className="lg:w-[450px] font-medium text-xs md:text-base hidden md:block"
             type="text"
-            placeholder="Rechercher un restaurant"
+            placeholder="Rechercher un restaurant (Dev in progress)"
           />
           <CiSearch className="font-bold text-3xl text-gray-400 rotate-90 opacity-50" />
         </div>

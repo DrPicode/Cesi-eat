@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import multer from 'multer';
 import { PrismaClient } from '@prisma/client';
+import { validateToken } from '../utils/jwt';
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -75,6 +76,7 @@ router.get('/restaurant/:restaurantId', async (req: express.Request, res: expres
 
 // modify one article
 router.post('/update/:id', async (req: Request, res: Response) => {
+    if (!validateToken(req)) return res.status(401).send("Unauthorized");
     const id = parseInt(req.params.id);
     const { name, price, thumbnail, is_deleted, type, restaurant_id_restaurant } = req.body;
 
@@ -99,6 +101,7 @@ router.post('/update/:id', async (req: Request, res: Response) => {
 
 // delete one article
 router.post('/delete/:id', async (req: Request, res: Response) => {
+    if (!validateToken(req)) return res.status(401).send("Unauthorized");
     const id = parseInt(req.params.id);
 
     try {

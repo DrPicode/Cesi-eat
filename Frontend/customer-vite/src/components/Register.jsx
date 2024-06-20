@@ -183,6 +183,10 @@ const Register = () => {
 
                                 const restaurantResult = await fetch("/api/restaurants", {
                                     method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                        "Authorization": `Bearer ${authProxy.token}`,
+                                    },
                                     body: formData,
                                 });
                                 if (restaurantResult.ok) {
@@ -192,6 +196,7 @@ const Register = () => {
                                         method: "PATCH",
                                         headers: {
                                             "Content-Type": "application/json",
+                                            "Authorization": `Bearer ${authProxy.token}`,
                                         },
                                         body: JSON.stringify({
                                             id_restaurant: restaurantBody.id_restaurant,

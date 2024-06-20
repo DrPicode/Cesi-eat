@@ -13,8 +13,6 @@ const Cart = ({ selectedSandwich, selectedSideFood, selectedDrink, articles, res
 
 
   const submitCart = async () => {
-      console.log("submit");
-      console.log(authProxy);
       if (authProxy.token) {
           await fetch("/api/carts", {
               method: "POST",
@@ -29,6 +27,9 @@ const Cart = ({ selectedSandwich, selectedSideFood, selectedDrink, articles, res
               }),
           });
           navigate("/checkout");
+      }
+      else {
+          navigate("/login");
       }
     }
 

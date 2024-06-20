@@ -2,6 +2,7 @@
 import express  from 'express';
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
+import {validateToken} from "../utils/jwt";
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -124,6 +125,10 @@ router.get('/latest', async (req, res) => {
 
 // get all orders by userId
 router.get('/user/:id', async (req, res) => {
+    const token: any = validateToken(req);
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
     try {
         const orders = await prisma.order.findMany({
             where: {

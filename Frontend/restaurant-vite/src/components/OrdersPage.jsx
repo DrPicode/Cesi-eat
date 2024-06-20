@@ -69,7 +69,11 @@ const OrdersPage = () => {
     const handleAccept = async (orderId) => {
         setIsLoading(true);
         try {
-            const response = await axios.post(`/api/restaurants/orders/${orderId}/accept`);
+            const response = await axios.post(`/api/restaurants/orders/${orderId}/accept`, null, {
+                headers: {
+                    'Authorization': `Bearer ${authProxyRestaurant.token}`
+                }
+            });
             if (response.data.success) {
                 fetchOrders();
             } else {
@@ -85,7 +89,11 @@ const OrdersPage = () => {
     const handleReject = async (orderId) => {
         setIsLoading(true);
         try {
-            const response = await axios.post(`/api/restaurants/orders/${orderId}/reject`);
+            const response = await axios.post(`/api/restaurants/orders/${orderId}/reject`, null, {
+                headers: {
+                    'Authorization': `Bearer ${authProxyRestaurant.token}`
+                }
+            });
             if (response.data.success) {
                 fetchOrders();
             } else {
@@ -101,7 +109,11 @@ const OrdersPage = () => {
     const handleReady = async (orderId) => {
         setIsLoading(true);
         try {
-            const response = await axios.post(`/api/restaurants/orders/${orderId}/ready`);
+            const response = await axios.post(`/api/restaurants/orders/${orderId}/ready`, null, {
+                headers: {
+                    'Authorization': `Bearer ${authProxyRestaurant.token}`
+                }
+            });
             if (response.data.success) {
                 fetchOrders();
             } else {

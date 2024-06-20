@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
+import { validateToken } from "../utils/jwt";
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -33,6 +34,7 @@ router.get('/deliveries', async (req: Request, res: Response) => {
 
 // Change status of delivery to delivering
 router.post('/deliveries/:orderId/delivering', async (req: Request, res: Response) => {
+    if (!validateToken(req)) return res.status(401).send("Unauthorized");
     const orderId = parseInt(req.params.orderId);
     await prisma.order.update({ where: { id_order: orderId }, data: { status: "Delivering" } });
     return res.status(200).json({ success: true });
@@ -40,6 +42,7 @@ router.post('/deliveries/:orderId/delivering', async (req: Request, res: Respons
 
 // Change status of delivery to delivered
 router.post('/deliveries/:orderId/delivered', async (req: Request, res: Response) => {
+    if (!validateToken(req)) return res.status(401).send("Unauthorized");
     const orderId = parseInt(req.params.orderId);
     const code = parseInt(req.body.code);
     const order = await prisma.order.findFirst({ where: { id_order: orderId } });

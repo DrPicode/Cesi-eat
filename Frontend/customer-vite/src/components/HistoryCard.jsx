@@ -27,6 +27,15 @@ const OrderHistory = ({ userId }) => {
         fetchOrders();
     }, [userId]);
 
+    const statusFrench = {
+        'Paid': 'Payé',
+        'Preparing': 'En préparation',
+        'Done': 'En attente du livreur',
+        'Delivering': 'En cours de livraison',
+        'Delivered': 'Livré',
+        'Cancelled': 'Annulé'
+    }
+
     return (
         <div>
             <h3 className="font-semibold text-2xl flex items-center gap-2">Historique des commandes</h3>
@@ -37,6 +46,9 @@ const OrderHistory = ({ userId }) => {
                             <h4 className="text-lg font-bold">Commande #{order.id_order}</h4>
                             <p className="text-gray-600">Coût total: {order.price} €</p>
                             <p className="text-gray-600">Date: {new Date(order.delivery_hour).toLocaleDateString()}</p>
+                            <p className={`text-${order.status === 'Paid' ? 'green' : order.status === 'Preparing' || order.status === 'Done' || order.status === 'Delivering' ? 'yellow' : 'red'}-600`}>
+                                Statut: {statusFrench[order.status]}
+                            </p>
                             <h5 className="text-md font-semibold mt-2">Articles achetés:</h5>
                             <ul className="list-disc list-inside">
                                 {order.cart.articles.map((item) => (
