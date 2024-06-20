@@ -117,9 +117,9 @@ const DeliveryPage = () => {
                                         return newDeliveries;
                                     }))}
                                     />
-                                    <button className="deliver-btn" onClick={() => handleDelivered(delivery)}>Commande livrée</button>
+                                    <button className="deliver-btn" onClick={() => handleDelivered(delivery)}>Confirmer</button>
                                 </>)}
-                                {delivery.status === 'Delivered' && <p>Commande déjà livrée</p>}
+                                {delivery.status === 'Delivered' && <p>Commande livrée</p>}
                             </div>
                         </div>
                     ))

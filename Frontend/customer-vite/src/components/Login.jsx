@@ -106,7 +106,7 @@ const Login = () => {
                 </div>
                 <div className="w-full flex justify-end mb-4">
                     <Link to="/forgot-password" className="text-sm text-black hover:underline">
-                        Mot de passe oublié ?
+                        Mot de passe oublié ? (Dev in progress)
                     </Link>
                 </div>
                 <div className="w-full flex justify-between mb-4">

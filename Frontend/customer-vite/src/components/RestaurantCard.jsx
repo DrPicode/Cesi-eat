@@ -11,6 +11,7 @@ const RestaurantCard = () => {
         if (response.ok) {
           const data = await response.json();
           setRestaurants(data);
+          console.log('Data fetched:', data);
         }
       } catch (error) {
         console.error('Error fetching data:', error);

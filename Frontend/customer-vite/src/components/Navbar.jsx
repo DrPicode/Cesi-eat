@@ -22,7 +22,9 @@ const Navbar = () => {
           localStorage.removeItem("User");
           navigate("/")
         } else {
-          alert("Not Authorized");
+          if (localStorage.getItem("User")) {
+            localStorage.removeItem("User");
+          }
           navigate("/login")
         }
       });

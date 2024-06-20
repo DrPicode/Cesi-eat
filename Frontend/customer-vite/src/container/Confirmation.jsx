@@ -39,7 +39,7 @@ const Confirmation = () => {
   }
 
   if (!order) {
-    return <div>Erreur lors du chargement des données</div>;
+    return <div>Votre commande est en cours de transmission</div>;
   }
 
   return (

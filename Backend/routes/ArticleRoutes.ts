@@ -77,7 +77,7 @@ router.get('/restaurant/:restaurantId', async (req: express.Request, res: expres
 });
 
 // modify one article
-router.post('/update/:id', async (req: Request, res: Response) => {
+/*router.post('/update/:id', async (req: Request, res: Response) => {
     if (!validateToken(req)) return res.status(401).send("Unauthorized");
     const id = parseInt(req.params.id);
     const { name, price, thumbnail, is_deleted, type, restaurant_id_restaurant } = req.body;
@@ -99,7 +99,7 @@ router.post('/update/:id', async (req: Request, res: Response) => {
         console.error('Error occurred:', error);
         return res.status(500).json({ error: 'Something went wrong' });
     }
-});
+});*/
 
 // delete one article
 router.post('/delete/:id', async (req: Request, res: Response) => {
@@ -113,6 +113,7 @@ router.post('/delete/:id', async (req: Request, res: Response) => {
                 is_deleted: true,
             },
         });
+        console.log(deletedArticle);
         return res.status(200).json(deletedArticle);
     } catch (error) {
         console.error('Error occurred:', error);

@@ -15,7 +15,7 @@ const OrderHistory = ({ userId }) => {
 
                 if (response.ok) {
                     const data = await response.json();
-                    setOrders(data.sort((a, b) => b.id_order - a.id_order)); // Trier les commandes par ordre décroissant
+                    setOrders(data.sort((a, b) => b.id_order - a.id_order));
                 } else {
                     alert('Erreur lors de la récupération des commandes');
                 }
@@ -24,8 +24,12 @@ const OrderHistory = ({ userId }) => {
             }
         };
 
-        fetchOrders();
-    }, [userId]);
+        fetchOrders(); // Appeler fetchOrders au montage initial
+
+        const interval = setInterval(fetchOrders, 15000);
+
+        return () => clearInterval(interval);
+    }, []);
 
     const statusFrench = {
         'Paid': 'Payé',

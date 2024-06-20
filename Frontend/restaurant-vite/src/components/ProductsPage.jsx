@@ -73,11 +73,12 @@ const ProductsPage = () => {
 
     const handleDeleteProduct = async (productId) => {
         try {
-            const headers = new Headers();
-            headers.set("Authorization", `Bearer ${authProxyRestaurant.token}`);
             const response = await fetch(`/api/articles/delete/${productId}`, {
                 method: "POST",
-                headers,
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${authProxyRestaurant.token}`,
+                }
             });
 
             if (response.ok) {

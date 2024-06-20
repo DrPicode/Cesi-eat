@@ -138,6 +138,28 @@ const Register = () => {
         return isValid;
     };
 
+    const disconnect = () => {
+        try {
+            const headers = new Headers();
+            headers.set("Authorization", `Bearer ${authProxy.token}`)
+            fetch(`/api/auth/logout`, {
+                method: "GET",
+                headers
+            }).then(async (response) => {
+                if (response.ok) {
+                    authProxy.token = null;
+                    localStorage.removeItem("User");
+                    navigate("/")
+                } else {
+                    alert("Not Authorized");
+                    navigate("/login")
+                }
+            });
+        } catch (e) {
+            console.error(e)
+        }
+    };
+
     const submit = async () => {
         if (validateForm()) {
             try {
@@ -171,8 +193,10 @@ const Register = () => {
 
                         if (loginResponse.ok) {
                             const body = await loginResponse.json();
-                            console.log({ body });
                             authProxy.token = body.accessToken;
+                            localStorage.setItem("User", JSON.stringify(body));
+                            disconnect();
+                            alert("DEMO : Votre compte a été créé avec succès, veuillez vous reconnecter pour valider votre compte.");
                             if (status === "restaurateur") {
                                 const formData = new FormData();
                                 formData.append("thumbnail", thumbnail);
@@ -184,7 +208,6 @@ const Register = () => {
                                 const restaurantResult = await fetch("/api/restaurants", {
                                     method: "POST",
                                     headers: {
-                                        "Content-Type": "application/json",
                                         "Authorization": `Bearer ${authProxy.token}`,
                                     },
                                     body: formData,
@@ -242,15 +265,6 @@ const Register = () => {
             <div className="flex flex-col items-center w-full max-w-md p-10 bg-gray-100 rounded-lg">
                 <h2 className="text-2xl font-bold mb-6 text-black">Créer un compte</h2>
                 <input
-                    value={lastName}
-                    onChange={handleLastNameChange}
-                    className={`w-full p-3 mb-4 border ${errors.lastName ? "border-red-500" : "border-gray-300"} rounded-lg`}
-                    type="text"
-                    placeholder="Nom"
-                    required
-                />
-                {errors.lastName && <p className="text-red-500 mb-4">{errors.lastName}</p>}
-                <input
                     value={firstName}
                     onChange={handleFirstNameChange}
                     className={`w-full p-3 mb-4 border ${errors.firstName ? "border-red-500" : "border-gray-300"} rounded-lg`}
@@ -259,6 +273,15 @@ const Register = () => {
                     required={true}
                 />
                 {errors.firstName && <p className="text-red-500 mb-4">{errors.firstName}</p>}
+                <input
+                    value={lastName}
+                    onChange={handleLastNameChange}
+                    className={`w-full p-3 mb-4 border ${errors.lastName ? "border-red-500" : "border-gray-300"} rounded-lg`}
+                    type="text"
+                    placeholder="Nom"
+                    required
+                />
+                {errors.lastName && <p className="text-red-500 mb-4">{errors.lastName}</p>}
                 <input
                     value={email}
                     onChange={handleEmailChange}

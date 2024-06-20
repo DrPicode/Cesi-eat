@@ -22,17 +22,6 @@ const FoodCard = ({ data }) => {
                 </p>
                 {/*  */}
               </div>
-              <div className="flex justify-between items-center ">
-                <div className="flex items-center gap-1">
-                  {/*  */}
-
-                  <p className="text-xs md:text-base font-medium">
-                    {item.address.city}
-                  </p>
-
-                </div>
-
-              </div>
             </div>
           </div>
         </Link>

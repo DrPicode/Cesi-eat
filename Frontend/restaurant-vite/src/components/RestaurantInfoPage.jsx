@@ -82,7 +82,6 @@ const ProfilePage = () => {
                     <p><strong>Numéro de téléphone :</strong><br />{phone}</p>
                     <p><strong>Mot de passe :</strong><br />*******</p>
                 </div>
-                <button className="primary" onClick={() => navigate('/modify')}>Modifier les informations</button>
                 <button className="secondary" onClick={disconnect}>Déconnexion</button>
             </div>
             <footer>
