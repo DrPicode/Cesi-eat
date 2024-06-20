@@ -19,6 +19,7 @@ const upload = multer({ storage: storage });
 
 //create a new article
 router.post('/create', upload.single('thumbnail'), async (req: express.Request, res: express.Response) => {
+    if (!validateToken(req)) return res.status(401).send("Unauthorized");
     const { name, price, type, restaurant_id_restaurant } = req.body;
 
     try {
@@ -32,6 +33,7 @@ router.post('/create', upload.single('thumbnail'), async (req: express.Request, 
                 restaurant_id_restaurant: parseInt(restaurant_id_restaurant),
             },
         });
+        console.log(newArticle);
         return res.status(201).json(newArticle);
     } catch (error) {
         console.error('Error occurred:', error);
