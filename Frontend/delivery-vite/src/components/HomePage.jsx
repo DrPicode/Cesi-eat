@@ -28,6 +28,10 @@ const HomePage = () => {
         }
     };
 
+    const user = JSON.parse(localStorage.getItem("User"));
+    const userFirstname = user.userFirstName;
+    const userLastname = user.userName;
+
     return (
         <div className="main-container">
             <header>
@@ -35,8 +39,8 @@ const HomePage = () => {
                 <h3>Livreur</h3>
             </header>
             <div className="home-page">
-                <h2>Bienvenue John Doe !</h2>
-                <div className="menu-buttons">
+                <h2>Bienvenue {userFirstname} {userLastname}</h2>
+                    <div className="menu-buttons">
                     <button className="secondary" onClick={() => navigate('/delivery')}>Livrer une commande</button>
                     <button className="secondary" onClick={() => navigate('/profile')}>Mon profil</button>
                     <button className="tertiary" onClick={disconnect}>Se déconnecter</button>

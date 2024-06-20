@@ -1,2 +1,0 @@
-# cesieats
-food delivery
