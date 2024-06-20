@@ -15,7 +15,7 @@ const OrderHistory = ({ userId }) => {
 
                 if (response.ok) {
                     const data = await response.json();
-                    setOrders(data.sort((a, b) => b.id_order - a.id_order)); // Trier les commandes par ordre décroissant
+                    setOrders(data.sort((a, b) => b.id_order - a.id_order));
                 } else {
                     alert('Erreur lors de la récupération des commandes');
                 }
@@ -24,8 +24,21 @@ const OrderHistory = ({ userId }) => {
             }
         };
 
-        fetchOrders();
-    }, [userId]);
+        fetchOrders(); // Appeler fetchOrders au montage initial
+
+        const interval = setInterval(fetchOrders, 15000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const statusFrench = {
+        'Paid': 'Payé',
+        'Preparing': 'En préparation',
+        'Done': 'En attente du livreur',
+        'Delivering': 'En cours de livraison',
+        'Delivered': 'Livré',
+        'Cancelled': 'Annulé'
+    }
 
     return (
         <div>
@@ -37,6 +50,9 @@ const OrderHistory = ({ userId }) => {
                             <h4 className="text-lg font-bold">Commande #{order.id_order}</h4>
                             <p className="text-gray-600">Coût total: {order.price} €</p>
                             <p className="text-gray-600">Date: {new Date(order.delivery_hour).toLocaleDateString()}</p>
+                            <p className={`text-${order.status === 'Paid' ? 'green' : order.status === 'Preparing' || order.status === 'Done' || order.status === 'Delivering' ? 'yellow' : 'red'}-600`}>
+                                Statut: {statusFrench[order.status]}
+                            </p>
                             <h5 className="text-md font-semibold mt-2">Articles achetés:</h5>
                             <ul className="list-disc list-inside">
                                 {order.cart.articles.map((item) => (

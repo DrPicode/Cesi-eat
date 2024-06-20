@@ -1,36 +1,88 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import { authProxyRestaurant } from "../proxy/auth.proxy.js";
 import './RestaurantInfoPage.css';
 
-const RestaurantInfoPage = () => {
-    const navigate = useNavigate();
+const ProfilePage = () => {
 
-    const restaurant = {
-        name: "McDonald's Saint Médard en Jalles",
-        category: "Fast food",
-        address: "Av. Descartes Centre Leclerc, 33160 Saint-Médard-en-Jalles",
-        email: "john.doe@e-mail.com",
-        phone: "+33 123 45 67 89",
-        password: "********"
+    const id = authProxyRestaurant.userId;
+    const navigate = useNavigate();
+    const [user, setUser] = useState(null);
+    const [email, setEmail] = useState(null);
+    const [phone, setPhone] = useState(null);
+
+
+    useEffect(() => {
+        if (!id) {
+            console.error("User ID is undefined");
+            return;
+        }
+        console.log("Fetch user with id ")
+        const fetchUserData = async () => {
+            try {
+                const headers = new Headers();
+                headers.set("Authorization", `Bearer ${authProxyRestaurant.token}`)
+                const response = await fetch(`/api/users/${id}`, {headers}).then(async (response) => {
+                    if (response.ok){
+                        const data = await response.json()
+                        setUser(data.firstName + " " + data.lastName)
+                        setEmail(data.email)
+                        setPhone(data.phone)
+                    } else {
+                        console.log(response)
+                        alert("Not Authorized");
+                        navigate("/")
+                    }
+                });
+            } catch (e) {
+                console.error(e)
+            }
+        }
+        fetchUserData();
+    }, [id]);
+
+    const disconnect = () => {
+        try {
+            const headers = new Headers();
+            headers.set("Authorization", `Bearer ${authProxyRestaurant.token}`)
+            fetch(`/api/auth/logout`, {
+                method: "GET",
+                headers
+            }).then(async (response) => {
+                if (response.ok){
+                    authProxyRestaurant.token = null;
+                    navigate("/")
+                } else {
+                    alert("Not Authorized");
+                    navigate("/")
+                }
+            });
+        } catch (e) {
+            console.error(e)
+        }
     };
+
+    const handleHomeClick = () => {
+        navigate('/home');
+    }
 
     return (
         <div className="main-container">
-            <header>
-                <h1>CESI Eats</h1>
-                <h3>Restaurateur</h3>
+            <header className="header">
+                <div className="header-left" onClick={handleHomeClick}>
+                    <h1>CESI Eats</h1>
+                    <h3>Restaurateur</h3>
+                </div>
             </header>
             <div className="info-page">
-                <h2>Informations Restaurant</h2>
+                <h2>Mon profil</h2>
                 <div className="info-box">
-                    <p><strong>Nom du restaurant :</strong><br />{restaurant.name}</p>
-                    <p><strong>Catégorie :</strong><br />{restaurant.category}</p>
-                    <p><strong>Adresse :</strong><br />{restaurant.address}</p>
-                    <p><strong>Adresse e-mail :</strong><br />{restaurant.email}</p>
-                    <p><strong>Numéro de téléphone :</strong><br />{restaurant.phone}</p>
-                    <p><strong>Mot de passe :</strong><br />{restaurant.password}</p>
+                    <p><strong>Nom et prénom :</strong><br />{user}</p>
+                    <p><strong>Adresse e-mail :</strong><br />{email}</p>
+                    <p><strong>Numéro de téléphone :</strong><br />{phone}</p>
+                    <p><strong>Mot de passe :</strong><br />*******</p>
                 </div>
-                <button className="primary" onClick={() => navigate('/home')}>Retour</button>
+                <button className="secondary" onClick={disconnect}>Déconnexion</button>
             </div>
             <footer>
                 <nav>
@@ -43,4 +95,4 @@ const RestaurantInfoPage = () => {
     );
 };
 
-export default RestaurantInfoPage;
+export default ProfilePage;

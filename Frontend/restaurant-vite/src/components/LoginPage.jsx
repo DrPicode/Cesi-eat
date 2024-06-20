@@ -1,52 +1,73 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
+import { authProxyRestaurant } from "../proxy/auth.proxy.js";
+import { useSnapshot } from "valtio";
 
 const LoginPage = () => {
     const navigate = useNavigate();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
-    const validateEmail = (email) => {
-        const re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-        return re.test(String(email).toLowerCase());
-    };
+    const authSnap = useSnapshot(authProxyRestaurant);
 
-    const handleLogin = async (e) => {
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
+    }
+
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+    }
+
+    const validateForm = () => {
+        if (!email.trim()) {
+            setError("Veuillez entrer une adresse e-mail.");
+            return false;
+        }
+        if (!password.trim()) {
+            setError("Veuillez entrer un mot de passe.");
+            return false;
+        }
+        return true;
+    }
+
+    const submit = async (e) => {
         e.preventDefault();
-        setError('');
-
-        if (!validateEmail(email)) {
-            setError('Veuillez entrer une adresse e-mail valide.');
-            return;
+        if (validateForm()) {
+            try {
+                const response = await fetch("/api/auth/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password
+                    })
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log({ data });
+                    authProxyRestaurant.token = data.accessToken;
+                    authProxyRestaurant.userId = data.userId;
+                    localStorage.setItem("User", JSON.stringify(data));
+                    if (data.userRole !== "Cooker") {
+                        navigate("/unauthorized");
+                    } else {
+                        navigate("/home");
+                    }
+                } else {
+                    // Afficher le message d'erreur sur la page
+                    const errorMessage = await response.text();
+                    setError(`Erreur lors de la connexion : ${errorMessage}`);
+                }
+            } catch (error) {
+                console.error(error);
+                setError(`Une erreur est survenue lors de la connexion. ${error}`);
+            }
         }
-
-        if (password.length < 6) {
-            setError('Le mot de passe doit comporter au moins 6 caractères.');
-            return;
-        }
-
-        // Simuler une vérification d'authentification
-        if (email === 'test@cesi.fr' && password === 'password') {
-            navigate('/home');
-        } else {
-            setError('Adresse e-mail ou mot de passe incorrect.');
-        }
-
-        // Préparer l'intégration avec le backend
-        // try {
-        //     const response = await axios.post('/api/login', { email, password });
-        //     if (response.data.success) {
-        //         navigate('/home');
-        //     } else {
-        //         setError('Adresse e-mail ou mot de passe incorrect.');
-        //     }
-        // } catch (error) {
-        //     console.error('Erreur lors de la tentative de connexion:', error);
-        //     setError('Une erreur est survenue. Veuillez réessayer.');
-        // }
-    };
+    }
 
     return (
         <div className="main-container">
@@ -55,28 +76,24 @@ const LoginPage = () => {
                 <h3>Restaurateur</h3>
             </header>
             <div className="login-page">
-                <form onSubmit={handleLogin}>
+                <form onSubmit={submit}>
                     <input
                         type="email"
                         placeholder="Adresse e-mail"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={handleEmailChange}
                         required
                     />
                     <input
                         type="password"
                         placeholder="Mot de passe"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={handlePasswordChange}
                         required
                     />
                     {error && <p className="error-message">{error}</p>}
                     <button className="primary" type="submit">Connexion</button>
                 </form>
-                <br />
-                <div className='register'>
-                    <button className="secondary" type="button" onClick={() => navigate('/register')}>Créer un compte</button>
-                </div>
             </div>
             <footer>
                 <nav>

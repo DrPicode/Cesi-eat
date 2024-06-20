@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'; // Importer useNavigate
 import { BsEye, BsEyeSlash } from 'react-icons/bs';
 import shape1 from '../assets/Union.png';
 import shape2 from '../assets/shape.png';
-import {authProxy} from "../proxy/auth.proxy.js";
+import { authProxy } from "../proxy/auth.proxy.js";
 
 const Register = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -21,6 +21,9 @@ const Register = () => {
     const [errors, setErrors] = useState({});
     const [isChecked, setIsChecked] = useState(false);
     const navigate = useNavigate(); // Utiliser useNavigate pour rediriger l'utilisateur
+    const [restaurantName, setRestaurantName] = useState("");
+    const [restaurantType, setRestaurantType] = useState("");
+    const [thumbnail, setThumbnail] = useState(null);
 
     const handleLastNameChange = (e) => {
         setLastName(e.target.value);
@@ -120,17 +123,50 @@ const Register = () => {
             isValid = false;
         }
 
+        if (status === "restaurateur") {
+            if (!restaurantName.trim()) {
+                errors.restaurantName = "Le nom du restaurant est obligatoire";
+                isValid = false;
+            }
+            if (!restaurantType.trim()) {
+                errors.restaurantType = "Le type du restaurant est obligatoire";
+                isValid = false;
+            }
+        }
+
         setErrors(errors);
         return isValid;
+    };
+
+    const disconnect = () => {
+        try {
+            const headers = new Headers();
+            headers.set("Authorization", `Bearer ${authProxy.token}`)
+            fetch(`/api/auth/logout`, {
+                method: "GET",
+                headers
+            }).then(async (response) => {
+                if (response.ok) {
+                    authProxy.token = null;
+                    localStorage.removeItem("User");
+                    navigate("/")
+                } else {
+                    alert("Not Authorized");
+                    navigate("/login")
+                }
+            });
+        } catch (e) {
+            console.error(e)
+        }
     };
 
     const submit = async () => {
         if (validateForm()) {
             try {
-                const response = await fetch("/api/auth/register", {
+                const registerResponse = await fetch("/api/auth/register", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
                         lastName,
@@ -139,48 +175,82 @@ const Register = () => {
                         phone,
                         password,
                         status,
-                        address, // Ajouter le champ adresse
-                        city, // Ajouter le champ ville
-                        postalCode // Ajouter le champ code postal
-                    })
+                        address,
+                        city,
+                        postalCode,
+                    }),
                 });
 
-                if (response.ok) {
+                if (registerResponse.ok) {
                     try {
-                        const response = await fetch("/api/auth/login", {
+                        const loginResponse = await fetch("/api/auth/login", {
                             method: "POST",
                             headers: {
-                                "Content-Type": "application/json"
+                                "Content-Type": "application/json",
                             },
-                            body: JSON.stringify({
-                                email,
-                                password
-                            })
+                            body: JSON.stringify({ email, password }),
                         });
 
-                        if (response.ok) {
-                            const body = await response.json();
-                            console.log({body});
+                        if (loginResponse.ok) {
+                            const body = await loginResponse.json();
                             authProxy.token = body.accessToken;
-                            navigate('/');
+                            localStorage.setItem("User", JSON.stringify(body));
+                            disconnect();
+                            alert("DEMO : Votre compte a été créé avec succès, veuillez vous reconnecter pour valider votre compte.");
+                            if (status === "restaurateur") {
+                                const formData = new FormData();
+                                formData.append("thumbnail", thumbnail);
+                                formData.append("name", restaurantName);
+                                formData.append("type", restaurantType);
+                                formData.append("user_id_user", body.userId);
+
+
+                                const restaurantResult = await fetch("/api/restaurants", {
+                                    method: "POST",
+                                    headers: {
+                                        "Authorization": `Bearer ${authProxy.token}`,
+                                    },
+                                    body: formData,
+                                });
+                                if (restaurantResult.ok) {
+                                    const restaurantBody = await restaurantResult.json();
+                                    const registerBody = await registerResponse.json();
+                                    await fetch("/api/addresses/linkToRestaurant", {
+                                        method: "PATCH",
+                                        headers: {
+                                            "Content-Type": "application/json",
+                                            "Authorization": `Bearer ${authProxy.token}`,
+                                        },
+                                        body: JSON.stringify({
+                                            id_restaurant: restaurantBody.id_restaurant,
+                                            id_address: registerBody.address_id_address,
+                                        }),
+                                    });
+                                }
+                                else {
+                                    const errorMessage = await restaurantResult.text();
+                                    setError(`Erreur lors de la création du restaurant : ${errorMessage}`);
+                                }
+                            }
+                            navigate("/");
                         } else {
-                            const errorMessage = await response.text();
+                            const errorMessage = await loginResponse.text();
                             setError(`Erreur lors de la connexion : ${errorMessage}`);
                         }
                     } catch (error) {
                         console.error(error);
-                        setError('Une erreur est survenue lors de la connexion.');
+                        setError("Une erreur est survenue lors de la connexion.");
                     }
                 } else {
-                    const errorMessage = await response.text();
+                    const errorMessage = await registerResponse.text();
                     alert(`Erreur lors de la création du compte : ${errorMessage}`);
                 }
             } catch (error) {
                 console.error(error);
-                alert('Une erreur est survenue lors de la création du compte.');
+                alert("Une erreur est survenue lors de la création du compte.");
             }
         }
-    }
+    };
 
     return (
         <div className="flex flex-col items-center justify-center bg-white w-full h-full">
@@ -195,15 +265,6 @@ const Register = () => {
             <div className="flex flex-col items-center w-full max-w-md p-10 bg-gray-100 rounded-lg">
                 <h2 className="text-2xl font-bold mb-6 text-black">Créer un compte</h2>
                 <input
-                    value={lastName}
-                    onChange={handleLastNameChange}
-                    className={`w-full p-3 mb-4 border ${errors.lastName ? "border-red-500" : "border-gray-300"} rounded-lg`}
-                    type="text"
-                    placeholder="Nom"
-                    required
-                />
-                {errors.lastName && <p className="text-red-500 mb-4">{errors.lastName}</p>}
-                <input
                     value={firstName}
                     onChange={handleFirstNameChange}
                     className={`w-full p-3 mb-4 border ${errors.firstName ? "border-red-500" : "border-gray-300"} rounded-lg`}
@@ -212,6 +273,15 @@ const Register = () => {
                     required={true}
                 />
                 {errors.firstName && <p className="text-red-500 mb-4">{errors.firstName}</p>}
+                <input
+                    value={lastName}
+                    onChange={handleLastNameChange}
+                    className={`w-full p-3 mb-4 border ${errors.lastName ? "border-red-500" : "border-gray-300"} rounded-lg`}
+                    type="text"
+                    placeholder="Nom"
+                    required
+                />
+                {errors.lastName && <p className="text-red-500 mb-4">{errors.lastName}</p>}
                 <input
                     value={email}
                     onChange={handleEmailChange}
@@ -304,6 +374,46 @@ const Register = () => {
                     </select>
                 </div>
                 {errors.status && <p className="text-red-500 mb-4">{errors.status}</p>}
+                <div className="relative w-full mb-4">
+                    {status === "restaurateur" && (
+                        <>
+                            <div>
+                                <input className={`w-full p-3 mb-4 border ${errors.restaurantName ? "border-red-500" : "border-gray-300"} rounded-lg text-gray-400 bg-white`} placeholder="Nom du restaurant"
+                                    id="restaurantName"
+                                    type="text"
+                                    value={restaurantName}
+                                    onChange={(e) => setRestaurantName(e.target.value)}
+                                />
+                                {errors.restaurantName && <span>{errors.restaurantName}</span>}
+                            </div>
+                            <div>
+                                <select className={`w-full p-3 mb-4 border ${errors.restaurantType ? "border-red-500" : "border-gray-300"} rounded-lg text-gray-400 bg-white`} id="restaurantType" value={restaurantType} onChange={(e) => setRestaurantType(e.target.value)}>
+                                    id="restaurantType"
+                                    value={restaurantType}
+                                    onChange={(e) => setRestaurantType(e.target.value)}
+
+                                    <option value="">Sélectionnez un type</option>
+                                    <option value="FastFood">FastFood</option>
+                                    <option value="FoodTruck">FoodTruck</option>
+                                    <option value="Asian">Asian</option>
+                                    <option value="Poke">Poke</option>
+                                    <option value="Salad">Salad</option>
+                                </select>
+                                {errors.restaurantType && <span>{errors.restaurantType}</span>}
+                            </div>
+                            <div>
+                                <input
+                                    onChange={(e) => setThumbnail(e.target.files[0])}
+                                    title='Image du restaurant'
+                                    type="file"
+                                    accept="image/*"
+                                    id="thumbnail"
+                                    name="thumbnail"
+                                />
+                            </div>
+                        </>
+                    )}
+                </div>
                 <div className="flex items-start mb-4">
                     <input
                         type="checkbox"

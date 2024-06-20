@@ -1,8 +1,8 @@
-import express  from 'express';
+import express from 'express';
 import http from 'http';
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import {prisma} from "./database/client";
+dotenv.config();
+import { prisma } from "./database/client";
 
 
 import cors from "cors";
@@ -16,24 +16,16 @@ import addressRoutes from './routes/AddressesRoutes';
 import contentRoutes from "./routes/ContentRoutes";
 import cartRoutes from "./routes/CartRoutes";
 import articleRoutes from "./routes/ArticleRoutes";
+import deliveriesRoutes from "./routes/DeliveriesRoutes";
 
-dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT ;
+const PORT = process.env.PORT;
 
 // const prisma = new PrismaClient();
 prisma.$connect()
     .then(() => console.log('Prisma connected'))
     .catch((error: Error) => console.error('Prisma connection error:', error));
-
-// MongoDB Connexion
-const MONGO_URL = process.env.MONGO_URL as string;
-
-mongoose.Promise = Promise;
-mongoose.connect(MONGO_URL)
-    .then(() => console.log('MongoDB connected'))
-    .catch((error: Error) => console.error('MongoDB connection error:', error));
 
 // Middleware
 app.use(cors());
@@ -56,6 +48,7 @@ app.use("/addresses", addressRoutes);
 app.use("/carts", cartRoutes);
 app.use("/articles", articleRoutes);
 app.use('/orders', orderRoutes);
+app.use('/deliveries', deliveriesRoutes);
 
 // 404 error Management
 app.use((req, res) => {
@@ -64,9 +57,9 @@ app.use((req, res) => {
 
 // Global Error Management
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-    console.error('Error occurred:', err); 
+    console.error('Error occurred:', err);
     res.status(500).json({ error: 'Internal server error' });
-  });
+});
 
 // Server Creation
 const server = http.createServer(app);

@@ -2,14 +2,15 @@
 import express  from 'express';
 import { Router } from 'express';
 import { PrismaClient } from '@prisma/client';
+import {validateToken} from "../utils/jwt";
 
 const router = Router();
 const prisma = new PrismaClient();
 
-// Créer une nouvelle commande
+// Create a new order
 router.post('/', async (req, res) => {
     try {
-        // Récupérer le panier et ses articles
+        // Verify that the cart exists
         const cart = await prisma.cart.findUnique({
             where: { id_cart: req.body.cartId },
             include: {
@@ -25,7 +26,7 @@ router.post('/', async (req, res) => {
             return res.status(404).json({ error: 'Panier non trouvé' });
         }
 
-        // Créer la commande
+        // Cerate the order if the cart exists
         const order = await prisma.order.create({
             data: {
                 is_deleted: false,
@@ -51,7 +52,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Obtenir la liste des commandes
+// Get all orders
 router.get('/', async (req, res) => {
     try {
         const orders = await prisma.order.findMany();
@@ -62,6 +63,7 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Get order by id
 router.get('id/:id', async (req, res) => {
     try {
         const order = await prisma.order.findUnique({
@@ -91,6 +93,7 @@ router.get('id/:id', async (req, res) => {
     }
 });
 
+// Get latest order
 router.get('/latest', async (req, res) => {
     try {
         const order = await prisma.order.findFirst({
@@ -120,8 +123,12 @@ router.get('/latest', async (req, res) => {
     }
 });
 
-// get all orders by user
+// get all orders by userId
 router.get('/user/:id', async (req, res) => {
+    const token: any = validateToken(req);
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
     try {
         const orders = await prisma.order.findMany({
             where: {

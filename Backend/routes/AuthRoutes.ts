@@ -1,23 +1,22 @@
-import {Router, Request, Response} from 'express';
+import { Router, Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { JwtUserPayload } from '../models/Token';
-import {prisma} from "../database/client";
-import {generateAccessToken, generateRefreshToken} from "../utils/jwt";
-import {UserType} from "@prisma/client";
+import { prisma } from "../database/client";
+import {generateAccessToken, generateRefreshToken, validateToken} from "../utils/jwt";
+import { UserType } from "@prisma/client";
+import { Log } from '../models/log';
 
 const router = Router();
 
 // New user creation
 router.post('/register', async (req: Request, res: Response) => {
-    const {lastName, firstName, email, phone, password, status, address, city, postalCode} = req.body;
+    const { lastName, firstName, email, phone, password, status, address, city, postalCode } = req.body;
 
     // Check if all fields are provided
     if (!lastName || !firstName || !email || !phone || !password || !status || !address || !city || !postalCode) {
         return res.status(400).send('Tous les champs sont requis');
     }
-
-    console.log("User:", {lastName, firstName, email, phone, password, status, address, city, postalCode})
 
     // Check if user already exists
     const user = await prisma.user.findUnique({
@@ -64,7 +63,7 @@ router.post('/register', async (req: Request, res: Response) => {
                 }
             }
         });
-        console.log({user});
+        console.log({ user });
         delete user.password;
         return res.status(201).json(user);
     } catch (error) {
@@ -86,23 +85,38 @@ router.post('/login', async (req: Request, res: Response) => {
         );
         console.log("User", user);
         if (!user) {
+            console.log('creating log')
+            const log = new Log({ log: `user not found ${req.body.email}` })
+            await log.save();
             return res.status(404).send('Utilisateur non trouvé');
         }
         if (await bcrypt.compare(req.body.password, user.password)) {
             const accessToken = generateAccessToken({ userId: user.id_user.toString(), lastName: user.lastName });
             const refreshToken = generateRefreshToken(user.id_user.toString());
-            console.log({refreshToken, accessToken});
+            console.log({ refreshToken, accessToken });
             res.cookie("refresh", refreshToken, {
                 httpOnly: true,
-                maxAge: 7 * 60 * 24 * 30, // 7 jours,
+                maxAge: 7 * 60 * 24 * 30 * 1000,
                 path: "/",
             })
 
+            console.log('creating log')
+            const log = new Log({ log: `user ${JSON.stringify(user)} connected` })
+            await log.save();
+
             return res.status(200).json({
                 accessToken,
-                userId: user.id_user
+                userId: user.id_user,
+                userRole: user.type,
+                userName: user.lastName,
+                userFirstName: user.firstName,
+                userEmail: user.email,
+                userPhone: user.phone,
             });
         } else {
+            console.log('creating log')
+            const log = new Log({ log: `failed authentication for user ${req.body.email}` })
+            await log.save();
             return res.status(401).send('Mot de passe incorrect');
         }
     } catch (error) {
@@ -111,12 +125,12 @@ router.post('/login', async (req: Request, res: Response) => {
     }
 });
 
-// Route pour rafraîchir le access token
+// Refresh token
 router.get('/token', async (req: Request, res: Response) => {
     const rawCookies = req.headers.cookie;
-    console.log({rawCookies});
+    console.log({ rawCookies });
     const token = rawCookies?.split(';').find((c: string) => c?.trim()?.startsWith('refresh='))?.split('=')[1];
-    console.log({token});
+    console.log({ token });
     if (!token) {
         return res.status(401).send('Refresh token non fourni');
     }
@@ -129,7 +143,7 @@ router.get('/token', async (req: Request, res: Response) => {
 
             const user = decoded as JwtUserPayload;
             const newAccessToken = generateAccessToken(user);
-            res.status(200).json({ accessToken: newAccessToken });
+            res.status(200).json({ accessToken: newAccessToken, userId: user.userId });
         });
     } catch (error) {
         console.error(error);
@@ -137,8 +151,12 @@ router.get('/token', async (req: Request, res: Response) => {
     }
 });
 
-// Route pour se déconnecter
+// Disconnect
 router.get('/logout', async (req: Request, res: Response) => {
+    const token: any = validateToken(req);
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
     res.cookie("refresh", "", { httpOnly: true, maxAge: 0 })
     res.status(204).send();
 });

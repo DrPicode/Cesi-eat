@@ -1,10 +1,13 @@
 {
     "compilerOptions": {
+        "target": "es6",
         "module": "NodeNext",
         "baseUrl": "Backend",
         "outDir": "dist",
         "sourceMap": true,
         "noImplicitAny": true,
     },
-    "include":["Backend/**/*"],
+    "include": [
+        "Backend/**/*"
+    ],
 }
