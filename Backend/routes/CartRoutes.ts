@@ -32,6 +32,7 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Create a new cart
 router.post('/', async (req, res) => {
     // Get token from headers
     const token: any = validateToken(req);
@@ -65,6 +66,7 @@ router.post('/', async (req, res) => {
     res.json(cart);
 });
 
+// Get the latest cart
 router.get('/latest', async (req, res) => {
     const token: any = validateToken(req);
     if (!token) {

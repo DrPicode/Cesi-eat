@@ -4,7 +4,7 @@ import multer from 'multer';
 
 const router = express.Router();
 
-// Get restaurants
+//get restaurants
 router.get('/', async (req: Request, res: Response) => {
     // Fetch restaurants from DB
     const restaurants = await prisma.restaurant.findMany({
@@ -49,18 +49,23 @@ router.get('/orders', async (req: Request, res: Response) => {
     return res.status(200).json(orders);
 });
 
+//change status of order to "preparing"
 router.post('/orders/:orderId/accept', async (req: Request, res: Response) => {
     const orderId = parseInt(req.params.orderId);
     console.log('accepting order', orderId)
     await prisma.order.update({ where: { id_order: orderId }, data: { status: "Preparing" } });
     return res.status(200).json({ success: true });
 });
+
+//change status of order to "cancelled"
 router.post('/orders/:orderId/reject', async (req: Request, res: Response) => {
     const orderId = parseInt(req.params.orderId);
     console.log('cancelling order', orderId)
     await prisma.order.update({ where: { id_order: orderId }, data: { status: "Cancelled" } });
     return res.status(200).json({ success: true });
 });
+
+//change status of order to "done"
 router.post('/orders/:orderId/ready', async (req: Request, res: Response) => {
     const orderId = parseInt(req.params.orderId);
     console.log('cancelling order', orderId)
@@ -79,6 +84,7 @@ router.get('/name/:name', async (req: Request, res: Response) => {
     return res.status(200).json(restaurant);
 });
 
+// change the status of a restaurant to closed
 router.post('/:restaurantId/close', async (req: Request, res: Response) => {
     const restaurantId = parseInt(req.params.restaurantId);
     console.log('closing restaurant', restaurantId)
@@ -86,6 +92,7 @@ router.post('/:restaurantId/close', async (req: Request, res: Response) => {
     return res.status(200).json({ success: true });
 });
 
+// change the status of a restaurant to open
 router.post('/:restaurantId/open', async (req: Request, res: Response) => {
     const restaurantId = parseInt(req.params.restaurantId);
     console.log('opening restaurant', restaurantId)
@@ -124,6 +131,7 @@ router.post('/', upload.single('thumbnail'), async (req: Request, res: Response)
     return res.status(200).json(restaurant);
 });
 
+// get the restaurant by id
 router.get('/:id', async (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
     const restaurant = await prisma.restaurant.findUnique({
@@ -138,6 +146,7 @@ router.get('/:id', async (req: Request, res: Response) => {
     return res.status(200).json(restaurant);
 });
 
+// get the orders of a restaurant by restaurant id
 router.get('/orders/:restaurantId', async (req: Request, res: Response) => {
     const restaurantId = parseInt(req.params.restaurantId);
 

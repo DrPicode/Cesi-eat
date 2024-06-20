@@ -38,7 +38,7 @@ router.post('/create', upload.single('thumbnail'), async (req: express.Request, 
     }
 });
 
-// Obtain the list of article
+// get the list of articles
 router.get('/articles', async (req: express.Request, res: express.Response) => {
     const restaurantId = parseInt(req.params.restaurantId);
 
@@ -73,7 +73,7 @@ router.get('/restaurant/:restaurantId', async (req: express.Request, res: expres
     }
 });
 
-//modify one article
+// modify one article
 router.post('/update/:id', async (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
     const { name, price, thumbnail, is_deleted, type, restaurant_id_restaurant } = req.body;
@@ -97,7 +97,7 @@ router.post('/update/:id', async (req: Request, res: Response) => {
     }
 });
 
-//delete one article
+// delete one article
 router.post('/delete/:id', async (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
 

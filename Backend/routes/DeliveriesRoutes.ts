@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client';
 const router = express.Router();
 const prisma = new PrismaClient();
 
+// Get all deliveries
 router.get('/deliveries', async (req: Request, res: Response) => {
     const deliveries = await prisma.order.findMany({
         where: { status: { in: ['Done', 'Delivering', 'Delivered'] } },
@@ -30,11 +31,14 @@ router.get('/deliveries', async (req: Request, res: Response) => {
     res.json({ deliveries, restaurant: deliveries[0]?.cart?.articles[0]?.article?.restaurant ?? {} });
 });
 
+// Change status of delivery to delivering
 router.post('/deliveries/:orderId/delivering', async (req: Request, res: Response) => {
     const orderId = parseInt(req.params.orderId);
     await prisma.order.update({ where: { id_order: orderId }, data: { status: "Delivering" } });
     return res.status(200).json({ success: true });
 });
+
+// Change status of delivery to delivered
 router.post('/deliveries/:orderId/delivered', async (req: Request, res: Response) => {
     const orderId = parseInt(req.params.orderId);
     const code = parseInt(req.body.code);

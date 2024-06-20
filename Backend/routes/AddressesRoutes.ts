@@ -5,12 +5,13 @@ import { PrismaClient } from '@prisma/client';
 const router = Router();
 const prisma = new PrismaClient();
 
+// get all addresses
 router.get('/', async (req: express.Request, res: express.Response) => {
     const addresses = await prisma.address.findMany();
     res.status(200).json(addresses);
 });
 
-// create a route to find the id_address with the address
+// find the id_address with the address
 router.get('/:address', async (req: express.Request, res: express.Response) => {
     const address = req.params.address;
     const addressId = await prisma.address.findFirst({
@@ -21,7 +22,7 @@ router.get('/:address', async (req: express.Request, res: express.Response) => {
     res.status(200).json(addressId);
 });
 
-//create a route to find the last address created
+// connect the address to the restaurant
 router.patch('/linkToRestaurant', async (req: express.Request, res: express.Response) => {
     const linkRestaurant = await prisma.address.update({
         where: {

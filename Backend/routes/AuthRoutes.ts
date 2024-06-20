@@ -125,7 +125,7 @@ router.post('/login', async (req: Request, res: Response) => {
     }
 });
 
-// Route pour rafraîchir le access token
+// Refresh token
 router.get('/token', async (req: Request, res: Response) => {
     const rawCookies = req.headers.cookie;
     console.log({ rawCookies });
@@ -151,7 +151,7 @@ router.get('/token', async (req: Request, res: Response) => {
     }
 });
 
-// Route pour se déconnecter
+// Disconnect
 router.get('/logout', async (req: Request, res: Response) => {
     res.cookie("refresh", "", { httpOnly: true, maxAge: 0 })
     res.status(204).send();
