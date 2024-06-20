@@ -4,7 +4,6 @@ import { AiOutlineCalendar } from 'react-icons/ai';
 import CartCheckOut from "../components/CartCheckOut.jsx";
 
 const CheckOut = () => {
-  const [active, setActive] = useState(null);
   const [activeNow, setActiveNow] = useState(true);
   const [currentDateTime, setCurrentDateTime] = useState('');
   const [addresses, setAddresses] = useState([]);
@@ -17,8 +16,7 @@ const CheckOut = () => {
   const fetchAddresses = async () => {
     try {
       const response = await fetch('/api/addresses');
-      const addressesData = await response.json();
-      return addressesData;
+      return await response.json();
     } catch (error) {
       console.error('Error fetching addresses:', error);
       throw error;
@@ -36,10 +34,6 @@ const CheckOut = () => {
     };
     fetchData();
   }, []);
-
-  const handleAddressClick = (index) => {
-    setActive(index === active ? null : index);
-  };
 
   const handleActiveNowToggle = () => {
     setActiveNow(!activeNow);
